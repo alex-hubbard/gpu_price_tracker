@@ -1,0 +1,117 @@
+#!/bin/bash
+# Convenient wrapper script for GPUHunt GPU price tracking
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$SCRIPT_DIR"
+
+# Colors for output
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+usage() {
+    echo -e "${BLUE}GPUHunt GPU Price Tracker${NC}"
+    echo ""
+    echo "Usage: $0 [command] [options]"
+    echo ""
+    echo "Commands:"
+    echo "  collect         Collect GPU prices from gpuhunt"
+    echo "  report          Generate price report (display only)"
+    echo "  best-deals      Show best GPU deals (display only)"
+    echo "  save-reports    Generate and save all reports to files"
+    echo "  plot            Generate summary visualization plots"
+    echo "  daily-update    Run complete daily update (collect + reports + plots)"
+    echo "  setup           Set up automated twice-daily collection"
+    echo "  help            Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  $0 collect                    # Collect all GPU prices"
+    echo "  $0 report                     # Generate summary report"
+    echo "  $0 best-deals H100            # Show best H100 deals"
+    echo "  $0 save-reports               # Save all reports to files"
+    echo "  $0 plot                       # Generate visualization plots"
+    echo "  $0 daily-update               # Run complete daily update"
+    echo "  $0 setup                      # Set up scheduler"
+    echo ""
+}
+
+collect() {
+    echo -e "${GREEN}Collecting GPU prices from gpuhunt...${NC}"
+    python3 collect.py -v --stats
+}
+
+report() {
+    if [ -z "$1" ]; then
+        echo -e "${GREEN}Generating summary report...${NC}"
+        python3 report.py --all
+    else
+        echo -e "${GREEN}Generating summary report for $1...${NC}"
+        python3 report.py --summary --gpu-type "$1" -v
+    fi
+}
+
+best_deals() {
+    if [ -z "$1" ]; then
+        echo -e "${GREEN}Finding best GPU deals...${NC}"
+        python3 report.py --best-deals --limit 15
+    else
+        echo -e "${GREEN}Finding best $1 deals...${NC}"
+        python3 report.py --best-deals --gpu-type "$1" --limit 15
+    fi
+}
+
+setup_scheduler() {
+    echo -e "${GREEN}Setting up automated collection...${NC}"
+    ./setup.sh
+}
+
+save_reports() {
+    echo -e "${GREEN}Generating and saving reports...${NC}"
+    ./generate_reports.sh
+}
+
+generate_plots() {
+    echo -e "${GREEN}Generating summary plots...${NC}"
+    python3 plot.py --top-n 25
+}
+
+run_daily_update() {
+    echo -e "${GREEN}Running complete daily update...${NC}"
+    ./daily_update.sh
+}
+
+# Main command dispatcher
+case "$1" in
+    collect)
+        collect
+        ;;
+    report)
+        report "$2"
+        ;;
+    best-deals)
+        best_deals "$2"
+        ;;
+    save-reports)
+        save_reports
+        ;;
+    plot)
+        generate_plots
+        ;;
+    daily-update)
+        run_daily_update
+        ;;
+    setup)
+        setup_scheduler
+        ;;
+    help|--help|-h|"")
+        usage
+        ;;
+    *)
+        echo -e "${YELLOW}Unknown command: $1${NC}"
+        echo ""
+        usage
+        exit 1
+        ;;
+esac
+
