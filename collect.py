@@ -48,6 +48,9 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
         # Extract pricing
         price = getattr(item, 'price', 0.0)
         
+        # Extract spot pricing information
+        is_spot = getattr(item, 'spot', False)
+        
         # Map provider names to standard format
         provider_map = {
             'aws': 'aws',
@@ -75,6 +78,7 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
             ram_gb=float(memory) if memory else 0.0,
             region=location,
             price_per_hour=float(price),
+            is_spot=bool(is_spot),
             available=True,  # gpuhunt typically returns available instances
             availability_zone=None
         )
