@@ -42,11 +42,20 @@ class PriceDatabase:
                 ram_gb REAL NOT NULL,
                 region TEXT NOT NULL,
                 price_per_hour REAL NOT NULL,
+                is_spot BOOLEAN NOT NULL DEFAULT 0,
                 available BOOLEAN,
                 availability_zone TEXT,
-                UNIQUE(timestamp, provider, instance_type, region)
+                UNIQUE(timestamp, provider, instance_type, region, is_spot)
             )
         """)
+        
+        # Add is_spot column to existing tables if it doesn't exist (migration)
+        try:
+            cursor.execute("ALTER TABLE gpu_prices ADD COLUMN is_spot BOOLEAN DEFAULT 0")
+            cursor.execute("UPDATE gpu_prices SET is_spot = 0 WHERE is_spot IS NULL")
+        except sqlite3.OperationalError:
+            # Column already exists, skip
+            pass
         
         # Create indexes for faster queries
         cursor.execute("""
@@ -111,8 +120,8 @@ class PriceDatabase:
                     INSERT OR REPLACE INTO gpu_prices (
                         timestamp, provider, instance_type, gpu_type, gpu_count,
                         gpu_memory_gb, vcpus, ram_gb, region, price_per_hour,
-                        available, availability_zone
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        is_spot, available, availability_zone
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     timestamp,
                     inst.provider,
@@ -124,6 +133,7 @@ class PriceDatabase:
                     inst.ram_gb,
                     inst.region,
                     inst.price_per_hour,
+                    inst.is_spot,
                     inst.available,
                     inst.availability_zone
                 ))
@@ -345,6 +355,11 @@ class PriceDatabase:
     
     def _row_to_instance(self, row: tuple) -> GPUInstance:
         """Convert database row to GPUInstance."""
+        # Handle both old schema (without is_spot) and new schema
+        is_spot = row[11] if len(row) > 11 else False
+        available_idx = 12 if len(row) > 12 else 11
+        az_idx = 13 if len(row) > 13 else 12
+        
         return GPUInstance(
             provider=row[2],
             instance_type=row[3],
@@ -355,8 +370,9 @@ class PriceDatabase:
             ram_gb=row[8],
             region=row[9],
             price_per_hour=row[10],
-            available=row[11],
-            availability_zone=row[12],
+            is_spot=bool(is_spot),
+            available=row[available_idx] if available_idx < len(row) else None,
+            availability_zone=row[az_idx] if az_idx < len(row) else None,
             last_updated=datetime.fromisoformat(row[1])
         )
     

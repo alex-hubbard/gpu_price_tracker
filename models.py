@@ -17,7 +17,8 @@ class GPUInstance:
     vcpus: int  # Number of vCPUs
     ram_gb: float  # System RAM in GB
     region: str  # Cloud provider region
-    price_per_hour: float  # On-demand price per hour in USD
+    price_per_hour: float  # Price per hour in USD (on-demand or spot)
+    is_spot: bool = False  # Whether this is a spot/preemptible instance
     available: Optional[bool] = None  # Whether available in region
     availability_zone: Optional[str] = None  # Specific AZ if applicable
     last_updated: Optional[datetime] = None
@@ -46,6 +47,7 @@ class GPUInstance:
             'region': self.region,
             'price_per_hour': self.price_per_hour,
             'price_per_gpu_hour': self.price_per_gpu_hour,
+            'is_spot': self.is_spot,
             'available': self.available,
             'availability_zone': self.availability_zone,
             'last_updated': self.last_updated.isoformat() if self.last_updated else None
