@@ -9,12 +9,117 @@ import argparse
 from datetime import datetime
 from typing import List, Optional
 from pathlib import Path
+import warnings
 
 try:
     import gpuhunt
+    # Monkey-patch TensorDock provider to handle API response format changes
+    try:
+        from gpuhunt.providers.tensordock import TensorDockProvider
+        import requests
+        import functools
+        
+        # Store original get method
+        _original_tensordock_get = TensorDockProvider.get
+        
+        @functools.wraps(_original_tensordock_get)
+        def _patched_tensordock_get(self, query_filter=None, balance_resources=True):
+            """Patched version that handles missing 'hostnodes' key in API response."""
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info("Fetching TensorDock offers")
+            
+            try:
+                # Get the marketplace URL (from the original implementation)
+                marketplace_hostnodes_url = "https://marketplace.tensordock.com/api/v0/client/hostnodes"
+                response = requests.get(marketplace_hostnodes_url, timeout=10)
+                response.raise_for_status()
+                data = response.json()
+                
+                # Handle case where 'hostnodes' key is missing or API format changed
+                if "hostnodes" not in data:
+                    # API format may have changed - log and return empty list
+                    logger.warning(
+                        "TensorDock API response missing 'hostnodes' key. "
+                        "Response keys: %s. API may have changed format.",
+                        list(data.keys())
+                    )
+                    # Return empty list - provider is unavailable but won't crash
+                    return []
+                
+                # If hostnodes exists, proceed with original logic
+                # We need to temporarily patch the requests.get call within the original method
+                # Since we can't easily do that, we'll manually construct the call
+                # But actually, the simplest is to just catch the KeyError and handle it
+                hostnodes = data["hostnodes"]
+                
+                # Now we need to execute the original logic with the safe hostnodes
+                # Since we have the data, let's manually execute the logic from the original method
+                from gpuhunt._internal.models import RawCatalogItem
+                from gpuhunt.providers.tensordock import convert_gpu_name, round_down
+                
+                offers = []
+                for hostnode, details in hostnodes.items():
+                    location = details["location"]["country"].lower().replace(" ", "")
+                    if query_filter is not None:
+                        offers += self.optimize_offers(
+                            query_filter,
+                            details["specs"],
+                            hostnode,
+                            location,
+                            balance_resources=balance_resources,
+                        )
+                    else:  # pick maximum possible configuration
+                        for gpu_name, gpu in details["specs"]["gpu"].items():
+                            if gpu["amount"] == 0:
+                                continue
+                            offers.append(
+                                RawCatalogItem(
+                                    instance_name=hostnode,
+                                    location=location,
+                                    price=round(
+                                        sum(
+                                            details["specs"][key]["price"]
+                                            * details["specs"][key]["amount"]
+                                            for key in ("cpu", "ram", "storage")
+                                        )
+                                        + gpu["amount"] * gpu["price"],
+                                        5,
+                                    ),
+                                    cpu=round_down(details["specs"]["cpu"]["amount"], 2),
+                                    memory=float(round_down(details["specs"]["ram"]["amount"], 2)),
+                                    gpu_vendor=None,
+                                    gpu_count=gpu["amount"],
+                                    gpu_name=convert_gpu_name(gpu_name),
+                                    gpu_memory=float(gpu["vram"]),
+                                    spot=False,
+                                    disk_size=float(details["specs"]["storage"]["amount"]),
+                                )
+                            )
+                return sorted(offers, key=lambda i: i.price)
+                
+            except KeyError as e:
+                if "hostnodes" in str(e) or "'hostnodes'" in str(e):
+                    logger.warning("TensorDock API response format changed - 'hostnodes' key missing. Skipping provider.")
+                    return []
+                # Re-raise other KeyErrors
+                raise
+            except Exception as e:
+                logger.warning("Error fetching TensorDock offers: %s", e)
+                # Return empty list instead of crashing
+                return []
+        
+        # Apply the patch
+        TensorDockProvider.get = _patched_tensordock_get
+        
+    except (ImportError, AttributeError):
+        # If TensorDock provider is not available or structure changed, continue without patch
+        pass
+        
 except ImportError:
     print("ERROR: gpuhunt module not installed. Run: pip install gpuhunt", file=sys.stderr)
     sys.exit(1)
+
 
 from models import GPUInstance
 from database import PriceDatabase
@@ -127,12 +232,15 @@ def collect_gpuhunt_prices(
         if provider:
             query_params['provider'] = provider
         
-        # Get catalog items
-        if query_params:
-            items = gpuhunt.query(**query_params)
-        else:
-            # Get all available instances
-            items = gpuhunt.query()
+        # Suppress warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            # Get catalog items
+            if query_params:
+                items = gpuhunt.query(**query_params)
+            else:
+                # Get all available instances
+                items = gpuhunt.query()
         
         if verbose:
             print(f"  Retrieved {len(items) if hasattr(items, '__len__') else 'unknown'} items from gpuhunt")
@@ -150,9 +258,13 @@ def collect_gpuhunt_prices(
         return instances
     
     except Exception as e:
-        print(f"ERROR querying gpuhunt: {e}", file=sys.stderr)
-        import traceback
-        traceback.print_exc()
+        # Handle errors gracefully
+        if verbose:
+            print(f"ERROR querying gpuhunt: {e}", file=sys.stderr)
+            import traceback
+            traceback.print_exc()
+        else:
+            print(f"WARNING: Error querying gpuhunt (some providers may be unavailable): {type(e).__name__}", file=sys.stderr)
         return []
 
 
