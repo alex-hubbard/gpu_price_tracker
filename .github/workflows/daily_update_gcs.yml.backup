@@ -1,0 +1,106 @@
+name: Daily GPU Price Update
+
+on:
+  schedule:
+    # Run daily at 9:00 AM UTC (adjust timezone as needed)
+    - cron: '0 9 * * *'
+  workflow_dispatch:  # Allow manual triggering
+
+env:
+  GCS_BUCKET: ${{ secrets.GCS_BUCKET_NAME }}
+  GCS_DB_PATH: data/gpu_prices.db
+  GCS_REPORTS_PATH: reports/
+  GCS_FIGURES_PATH: reports/figures/
+  GCS_LOGS_PATH: data/
+
+jobs:
+  daily-update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+    
+    - name: Make daily_update.sh executable
+      run: chmod +x daily_update.sh
+    
+    - name: Create necessary directories
+      run: |
+        mkdir -p data reports reports/figures
+    
+    - name: Download existing database from GCS
+      run: |
+        if gsutil -q stat "gs://${GCS_BUCKET}/${GCS_DB_PATH}"; then
+          echo "Downloading existing database from GCS..."
+          gsutil cp "gs://${GCS_BUCKET}/${GCS_DB_PATH}" "${GCS_DB_PATH}"
+          echo "Database downloaded successfully"
+        else
+          echo "No existing database found in GCS, starting fresh"
+        fi
+      continue-on-error: true
+    
+    - name: Run daily update
+      run: ./daily_update.sh
+    
+    - name: Upload database to GCS
+      if: success()
+      run: |
+        echo "Uploading database to GCS..."
+        gsutil cp "${GCS_DB_PATH}" "gs://${GCS_BUCKET}/${GCS_DB_PATH}"
+        echo "Database uploaded successfully"
+    
+    - name: Upload reports to GCS
+      if: success()
+      run: |
+        echo "Uploading reports to GCS..."
+        gsutil -m cp -r "${GCS_REPORTS_PATH}*.txt" "gs://${GCS_BUCKET}/${GCS_REPORTS_PATH}" || true
+        echo "Reports uploaded successfully"
+    
+    - name: Upload plots to GCS
+      if: success()
+      run: |
+        echo "Uploading plots to GCS..."
+        gsutil -m cp -r "${GCS_FIGURES_PATH}*.png" "gs://${GCS_BUCKET}/${GCS_FIGURES_PATH}" || true
+        echo "Plots uploaded successfully"
+    
+    - name: Upload logs to GCS
+      if: always()
+      run: |
+        echo "Uploading logs to GCS..."
+        gsutil -m cp "${GCS_LOGS_PATH}daily_update_*.log" "gs://${GCS_BUCKET}/${GCS_LOGS_PATH}" || true
+        echo "Logs uploaded successfully"
+    
+    - name: Clean up old logs in GCS (keep last 30 days)
+      if: success()
+      run: |
+        echo "Note: For automatic log cleanup, configure GCS bucket lifecycle rules"
+        echo "Recommended: Set lifecycle rule to delete logs older than 30 days"
+        echo "This can be done in GCS Console: Bucket → Lifecycle → Add Rule"
+      continue-on-error: true
+    
+    - name: Upload reports as artifacts (for GitHub UI)
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: daily-update-reports
+        path: |
+          reports/*.txt
+          reports/figures/*.png
+          data/daily_update_*.log
+        retention-days: 30

@@ -1,4 +1,4 @@
-name: Daily GPU Price Update
+name: Daily GPU Price Update (Git LFS)
 
 on:
   schedule:
@@ -13,6 +13,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        lfs: true  # Enable Git LFS
     
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -34,7 +36,40 @@ jobs:
     - name: Run daily update
       run: ./daily_update.sh
     
-    - name: Upload reports as artifacts
+    - name: Commit and push results
+      if: success()
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+        # Add database and reports to Git LFS tracking
+        git lfs track "data/gpu_prices.db" || true
+        git lfs track "reports/*.txt" || true
+        git lfs track "reports/figures/*.png" || true
+        
+        # Add all files
+        git add .gitattributes
+        git add data/gpu_prices.db
+        git add reports/*.txt reports/figures/*.png 2>/dev/null || true
+        git add data/daily_update_*.log 2>/dev/null || true
+        
+        # Only commit if there are changes
+        if ! git diff --staged --quiet; then
+          git commit -m "Daily update: $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
+        else
+          echo "No changes to commit"
+        fi
+    
+    - name: Clean up old reports (keep last 30 days)
+      if: success()
+      run: |
+        # Keep only the most recent reports (last 30 days)
+        # This helps manage Git LFS storage
+        find reports/ -name "*.txt" -type f -mtime +30 -delete 2>/dev/null || true
+        find data/ -name "daily_update_*.log" -type f -mtime +30 -delete 2>/dev/null || true
+    
+    - name: Upload reports as artifacts (for GitHub UI)
       uses: actions/upload-artifact@v4
       if: always()
       with:
@@ -44,11 +79,3 @@ jobs:
           reports/figures/*.png
           data/daily_update_*.log
         retention-days: 30
-    
-    - name: Commit and push results (optional)
-      if: success()
-      run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git add reports/ data/
-        git diff --staged --quiet || (git commit -m "Daily update: $(date +'%Y-%m-%d %H:%M:%S')" && git push)
