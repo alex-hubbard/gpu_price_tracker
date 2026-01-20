@@ -1,4 +1,4 @@
-name: Daily GPU Price Update (Git LFS)
+name: Daily GPU Price Collection
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  daily-update:
+  collect-data:
     runs-on: ubuntu-latest
     
     steps:
@@ -26,56 +26,38 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Make daily_update.sh executable
-      run: chmod +x daily_update.sh
-    
     - name: Create necessary directories
       run: |
-        mkdir -p data reports reports/figures
+        mkdir -p data
     
-    - name: Run daily update
-      run: ./daily_update.sh
+    - name: Collect GPU prices
+      run: |
+        echo "Collecting GPU prices from gpuhunt..."
+        python3 collect.py -v --stats
+        echo "Collection complete!"
     
-    - name: Commit and push results
+    - name: Commit and push database
       if: success()
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         
-        # Add database and reports to Git LFS tracking
+        # Add database to Git LFS tracking (if not already tracked)
         git lfs track "data/gpu_prices.db" || true
-        git lfs track "reports/*.txt" || true
-        git lfs track "reports/figures/*.png" || true
         
-        # Add all files
-        git add .gitattributes
+        # Add database file
+        git add .gitattributes 2>/dev/null || true
         git add data/gpu_prices.db
-        git add reports/*.txt reports/figures/*.png 2>/dev/null || true
-        git add data/daily_update_*.log 2>/dev/null || true
         
         # Only commit if there are changes
         if ! git diff --staged --quiet; then
-          git commit -m "Daily update: $(date +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "Daily data collection: $(date +'%Y-%m-%d %H:%M:%S')"
           git push
         else
           echo "No changes to commit"
         fi
     
-    - name: Clean up old reports (keep last 30 days)
+    - name: Clean up old logs (keep last 30 days)
       if: success()
       run: |
-        # Keep only the most recent reports (last 30 days)
-        # This helps manage Git LFS storage
-        find reports/ -name "*.txt" -type f -mtime +30 -delete 2>/dev/null || true
-        find data/ -name "daily_update_*.log" -type f -mtime +30 -delete 2>/dev/null || true
-    
-    - name: Upload reports as artifacts (for GitHub UI)
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: daily-update-reports
-        path: |
-          reports/*.txt
-          reports/figures/*.png
-          data/daily_update_*.log
-        retention-days: 30
+        find data/ -name "*.log" -type f -mtime +30 -delete 2>/dev/null || true
