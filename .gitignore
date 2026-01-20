@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Cache
+.cache/
+
+# Environment variables
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+CHANGELOG.md
+# Data and reports are tracked via Git LFS (see .gitattributes)
+# Only ignore untracked files in these directories
+data/*
+!data/gpu_prices.db
+!data/*.log
+reports/*
+!reports/*.txt
+!reports/figures/
+reports/figures/*
+!reports/figures/*.png

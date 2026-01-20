@@ -1,3 +1,4 @@
+# Git LFS tracking for large files
 data/gpu_prices.db filter=lfs diff=lfs merge=lfs -text
 data/*.log filter=lfs diff=lfs merge=lfs -text
 reports/*.txt filter=lfs diff=lfs merge=lfs -text
