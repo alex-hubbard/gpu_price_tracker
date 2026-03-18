@@ -52,3 +52,6 @@ reports/*
 !reports/figures/
 reports/figures/*
 !reports/figures/*.png
+analysis.ipynb
+data/
+reports/
