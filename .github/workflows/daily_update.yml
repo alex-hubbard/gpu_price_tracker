@@ -9,7 +9,11 @@ on:
 jobs:
   collect-data:
     runs-on: ubuntu-latest
-    
+
+    permissions:
+      id-token: write      # lets GitHub mint the OIDC JWT for AWS
+      contents: write        # only if this job still runs `git push` (yours does)
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -35,27 +39,17 @@ jobs:
         echo "Collecting GPU prices from gpuhunt..."
         python3 collect.py -v --stats
         echo "Collection complete!"
+
+    - name: Configure AWS credentials (OIDC)
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+        aws-region: us-east-1
     
-    - name: Commit and push database
+    - name: Upload database to S3
       if: success()
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        
-        # Add database to Git LFS tracking (if not already tracked)
-        git lfs track "data/gpu_prices.db" || true
-        
-        # Add database file
-        git add .gitattributes 2>/dev/null || true
-        git add data/gpu_prices.db
-        
-        # Only commit if there are changes
-        if ! git diff --staged --quiet; then
-          git commit -m "Daily data collection: $(date +'%Y-%m-%d %H:%M:%S')"
-          git push
-        else
-          echo "No changes to commit"
-        fi
+        aws s3 cp data/gpu_prices.db "s3://hubbard-gpu-price-data/gpu_prices.db"
     
     - name: Clean up old logs (keep last 30 days)
       if: success()
