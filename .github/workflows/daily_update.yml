@@ -27,8 +27,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        # Parquet emission needs pyarrow; not in the runtime requirements.
-        pip install pyarrow
+        # Parquet emission needs pyarrow; HF sync needs huggingface_hub.
+        # Neither is in the runtime requirements.
+        pip install pyarrow huggingface_hub
 
     - name: Create necessary directories
       run: mkdir -p data data/parquet
@@ -61,3 +62,13 @@ jobs:
         aws s3 sync data/parquet/prices/ \
           s3://hubbard-gpu-price-data/prices/ \
           --size-only
+
+    - name: Sync Parquet snapshot to Hugging Face
+      if: success() && env.HF_TOKEN != ''
+      env:
+        HF_TOKEN: ${{ secrets.HF_TOKEN }}
+      # Idempotent: HF dedupes content-addressed uploads, so repeated runs
+      # only push the new snapshot file.
+      run: |
+        python3 scripts/sync_to_huggingface.py \
+          --src data/parquet/prices

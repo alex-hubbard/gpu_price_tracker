@@ -43,6 +43,11 @@ def get_con() -> duckdb.DuckDBPyConnection:
         if access_key and secret_key:
             con.execute(f"SET s3_access_key_id='{access_key}'")
             con.execute(f"SET s3_secret_access_key='{secret_key}'")
+        else:
+            # Anonymous read mode: requires the S3 bucket policy to grant
+            # public s3:GetObject + s3:ListBucket on the prices/ prefix.
+            con.execute("SET s3_use_ssl=true")
+            con.execute("SET s3_url_style='vhost'")
         glob = f"s3://{bucket}/{prefix}/**/*.parquet"
 
     con.execute(
@@ -95,6 +100,44 @@ def load_latest_snapshot() -> pd.DataFrame:
     ).df()
     df["is_spot"] = df["is_spot"].astype(bool)
     df["price_per_gpu_hour"] = df["price_per_hour"] / df["gpu_count"]
+    return df
+
+
+@st.cache_data(ttl=3600)
+def load_provider_freshness() -> pd.DataFrame:
+    """Per-provider last-seen timestamp and listing count.
+
+    Returns one row per provider sorted by `last_seen` descending. Used to
+    render the freshness panel in the app header — providers that have not
+    appeared in a recent snapshot indicate a scraper outage.
+    """
+    con = get_con()
+    df = con.execute(
+        """
+        WITH per_provider AS (
+            SELECT provider,
+                   MAX(timestamp) AS last_seen
+            FROM prices
+            WHERE gpu_count > 0 AND gpu_type != 'Unknown'
+            GROUP BY provider
+        ),
+        latest_listings AS (
+            SELECT provider, COUNT(*) AS listings_in_latest
+            FROM prices
+            WHERE timestamp = (SELECT MAX(timestamp) FROM prices)
+              AND gpu_count > 0 AND gpu_type != 'Unknown'
+            GROUP BY provider
+        )
+        SELECT p.provider,
+               p.last_seen,
+               COALESCE(l.listings_in_latest, 0) AS listings_in_latest
+        FROM per_provider p
+        LEFT JOIN latest_listings l USING (provider)
+        ORDER BY p.last_seen DESC, p.provider
+        """
+    ).df()
+    if not df.empty:
+        df["last_seen"] = pd.to_datetime(df["last_seen"])
     return df
 
 

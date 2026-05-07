@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -14,10 +15,16 @@ import streamlit as st  # noqa: E402
 from queries import (  # noqa: E402
     load_filter_options,
     load_latest_snapshot,
+    load_provider_freshness,
     load_spread,
     load_stats,
     load_trends,
 )
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+GITHUB_URL = "https://github.com/alex-hubbard/gpu_price_tracker"
+PUBLIC_S3_URL = "s3://hubbard-gpu-price-data/prices/"
+HF_DATASET_URL = "https://huggingface.co/datasets/afhubbard/gpu-prices"
 
 st.set_page_config(
     page_title="GPU Price Tracker",
@@ -28,12 +35,43 @@ st.set_page_config(
 st.title("GPU Price Tracker")
 st.caption(
     "Cross-cloud GPU rental prices, collected twice daily across "
-    "AWS, GCP, Azure, Lambda, RunPod, Vast.ai, and other providers."
+    "AWS, GCP, Azure, Lambda, RunPod, Vast.ai, and other providers. "
+    f"[Source on GitHub]({GITHUB_URL})."
 )
 
 stats = load_stats()
 options = load_filter_options()
 latest = load_latest_snapshot()
+freshness = load_provider_freshness()
+
+
+# ---------- Freshness banner ----------
+def _freshness_banner(last_snapshot_iso: str | None) -> None:
+    if not last_snapshot_iso:
+        st.error("No data available.")
+        return
+    last = pd.to_datetime(last_snapshot_iso, utc=True)
+    now = datetime.now(timezone.utc)
+    age = now - last.to_pydatetime()
+    age_h = age.total_seconds() / 3600
+    last_str = last.strftime("%Y-%m-%d %H:%M UTC")
+    if age_h <= 24:
+        st.success(
+            f"🟢 Fresh — last collected {last_str} ({age_h:.1f}h ago)."
+        )
+    elif age_h <= 72:
+        st.warning(
+            f"🟡 Stale — last collected {last_str} ({age_h:.0f}h ago). "
+            "Daily collection may have missed a run."
+        )
+    else:
+        st.error(
+            f"🔴 Outdated — last collected {last_str} "
+            f"({age_h / 24:.1f} days ago). Pipeline likely broken."
+        )
+
+
+_freshness_banner(stats["last_snapshot"])
 
 # ---------- KPI row ----------
 kpi_cols = st.columns(6)
@@ -47,6 +85,35 @@ if not latest.empty:
         "Median $/GPU-hr",
         f"${latest['price_per_gpu_hour'].median():.2f}",
     )
+
+# ---------- Per-provider freshness panel ----------
+if not freshness.empty:
+    last_snapshot_ts = pd.to_datetime(stats["last_snapshot"], utc=True)
+    with st.expander("Per-provider coverage", expanded=False):
+        st.caption(
+            "🟢 listed in the latest snapshot · "
+            "🟡 not in latest, but seen in the last 7 days · "
+            "🔴 not seen in the last 7 days (likely scraper outage)"
+        )
+        cols = st.columns(min(len(freshness), 6))
+        for i, row in freshness.reset_index(drop=True).iterrows():
+            seen = pd.to_datetime(row["last_seen"], utc=True)
+            age_h = (last_snapshot_ts - seen).total_seconds() / 3600
+            if int(row["listings_in_latest"]) > 0:
+                dot = "🟢"
+            elif age_h <= 7 * 24:
+                dot = "🟡"
+            else:
+                dot = "🔴"
+            with cols[i % len(cols)]:
+                st.markdown(
+                    f"{dot} **{row['provider']}**  \n"
+                    f"<span style='color:#888;font-size:0.85em'>"
+                    f"{int(row['listings_in_latest']):,} in latest · "
+                    f"{seen.strftime('%Y-%m-%d %H:%M UTC')}"
+                    f"</span>",
+                    unsafe_allow_html=True,
+                )
 
 # ---------- Sidebar filters ----------
 st.sidebar.header("Filters")
@@ -78,8 +145,8 @@ elif spot_choice == "On-demand only":
     is_spot_filter = False
 
 # ---------- Tabs ----------
-tab_table, tab_trends, tab_spread = st.tabs(
-    ["Latest prices", "Price trends", "Spot vs on-demand"]
+tab_table, tab_trends, tab_spread, tab_about = st.tabs(
+    ["Latest prices", "Price trends", "Spot vs on-demand", "About / Methodology"]
 )
 
 # ----- Tab 1: Latest prices -----
@@ -93,7 +160,21 @@ with tab_table:
         df = df[df["is_spot"] == is_spot_filter]
 
     df = df.sort_values("price_per_gpu_hour")
-    st.write(f"**{len(df):,}** matching listings")
+
+    header_col, dl_col = st.columns([4, 1])
+    header_col.write(f"**{len(df):,}** matching listings")
+    csv_bytes = df.to_csv(index=False).encode("utf-8")
+    dl_col.download_button(
+        "Download CSV",
+        data=csv_bytes,
+        file_name=f"gpu_prices_{stats['last_snapshot'][:10]}.csv"
+        if stats["last_snapshot"]
+        else "gpu_prices.csv",
+        mime="text/csv",
+        use_container_width=True,
+        help="Download the currently filtered listings as CSV.",
+    )
+
     st.dataframe(
         df[
             [
@@ -236,8 +317,72 @@ with tab_spread:
         with st.expander("Underlying daily prices"):
             st.dataframe(spread, hide_index=True, use_container_width=True)
 
+# ----- Tab 4: About / Methodology -----
+with tab_about:
+    st.subheader("Get the data")
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown(
+            f"""
+**Hugging Face Datasets**
+
+```python
+from datasets import load_dataset
+ds = load_dataset("afhubbard/gpu-prices", split="train")
+```
+
+[{HF_DATASET_URL}]({HF_DATASET_URL})
+"""
+        )
+    with col_b:
+        st.markdown(
+            f"""
+**Public S3 (anonymous read)**
+
+```python
+import duckdb
+con = duckdb.connect()
+con.sql("INSTALL httpfs; LOAD httpfs;")
+con.sql(\"\"\"
+SELECT * FROM read_parquet(
+  '{PUBLIC_S3_URL}**/*.parquet',
+  hive_partitioning = true
+) LIMIT 5
+\"\"\")
+```
+"""
+        )
+
+    st.divider()
+    st.subheader("How to cite")
+    st.code(
+        """@misc{hubbard2026gpuprices,
+  author       = {Alex Hubbard},
+  title        = {GPU Price Tracker},
+  year         = {2026},
+  howpublished = {\\url{https://github.com/alex-hubbard/gpu_price_tracker}},
+  note         = {Dataset and software, MIT (code) / CC BY 4.0 (data)}
+}""",
+        language="bibtex",
+    )
+
+    st.divider()
+    st.subheader("Methodology")
+    methodology_path = REPO_ROOT / "methodology.md"
+    if methodology_path.exists():
+        st.markdown(
+            methodology_path.read_text(encoding="utf-8"),
+            unsafe_allow_html=False,
+        )
+    else:
+        st.info(
+            "methodology.md is not bundled with this deployment. "
+            f"Read it on [GitHub]({GITHUB_URL}/blob/main/methodology.md)."
+        )
+
 st.divider()
 st.caption(
     f"Data refreshed twice daily • last snapshot {stats['last_snapshot']} • "
-    "[source on GitHub](https://github.com/alex-hubbard/gpu_price_tracker)"
+    f"[source on GitHub]({GITHUB_URL}) · "
+    "code MIT, data CC BY 4.0"
 )

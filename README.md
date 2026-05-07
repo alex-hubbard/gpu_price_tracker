@@ -111,8 +111,11 @@ python3 query_history.py --trends --gpu-type H100 --days 7
 ## Documentation
 
 - [README.md](README.md) - This file
-- [GUIDE.md](GUIDE.md) - Detailed usage guide
+- [methodology.md](methodology.md) - Collection methodology, schema, normalization, limitations
+- [GUIDE.md](GUIDE.md) - Detailed CLI usage guide
+- [MODELING_GPU_USAGE_TRENDS.md](MODELING_GPU_USAGE_TRENDS.md) - Analytical context and starter queries
 - [VISUALIZATION_GUIDE.md](VISUALIZATION_GUIDE.md) - Visualization guide
+- [streamlit_app/README.md](streamlit_app/README.md) - Public dashboard deploy guide
 
 ## Requirements
 
@@ -124,4 +127,28 @@ python3 query_history.py --trends --gpu-type H100 --days 7
 
 ## License
 
-MIT
+This repository is dual-licensed.
+
+- **Code** is released under the MIT License — see [LICENSE](LICENSE).
+- **Data** (the dataset published to the public S3 mirror and the
+  Hugging Face Datasets repository) is released under the Creative
+  Commons Attribution 4.0 International License (CC BY 4.0) — see
+  [DATA_LICENSE](DATA_LICENSE).
+
+## How to cite
+
+If you use this dataset or software in your research, please cite it.
+Citation metadata is provided in [CITATION.cff](CITATION.cff); GitHub
+renders a "Cite this repository" widget from that file.
+
+BibTeX:
+
+```bibtex
+@misc{hubbard2026gpuprices,
+  author       = {Alex Hubbard},
+  title        = {GPU Price Tracker},
+  year         = {2026},
+  howpublished = {\url{https://github.com/alex-hubbard/gpu_price_tracker}},
+  note         = {Dataset and software, MIT (code) / CC BY 4.0 (data)}
+}
+```
