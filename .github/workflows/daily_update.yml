@@ -12,27 +12,26 @@ jobs:
 
     permissions:
       id-token: write      # lets GitHub mint the OIDC JWT for AWS
-      contents: write        # only if this job still runs `git push` (yours does)
+      contents: read
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-      with:
-        lfs: true  # Enable Git LFS
-    
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    
+        # Parquet emission needs pyarrow; not in the runtime requirements.
+        pip install pyarrow
+
     - name: Create necessary directories
-      run: |
-        mkdir -p data
+      run: mkdir -p data data/parquet
 
     - name: Configure AWS credentials (OIDC)
       uses: aws-actions/configure-aws-credentials@v4
@@ -40,29 +39,25 @@ jobs:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: us-east-1
 
-    - name: Download existing database from S3
-      # Pull the running DB so collect.py appends a new snapshot rather than
-      # starting fresh. `|| true` lets the very first run succeed when the
-      # object does not yet exist.
-      run: |
-        aws s3 cp "s3://hubbard-gpu-price-data/gpu_prices.db" data/gpu_prices.db || \
-          echo "No existing DB in S3 — starting fresh."
-
     - name: Collect GPU prices
-      # collect.py exits nonzero when it gathers zero records, which fails the
-      # job and skips the upload step (preventing an empty DB from clobbering
-      # S3).
+      # collect.py exits nonzero on zero records, which fails the job and
+      # skips the upload step (preventing an empty publish).
       run: |
         echo "Collecting GPU prices from gpuhunt..."
         python3 collect.py -v --stats
         echo "Collection complete!"
 
-    - name: Upload database to S3
-      if: success()
+    - name: Emit latest snapshot as Parquet
       run: |
-        aws s3 cp data/gpu_prices.db "s3://hubbard-gpu-price-data/gpu_prices.db"
-    
-    - name: Clean up old logs (keep last 30 days)
+        python3 scripts/emit_latest_parquet.py \
+          --db data/gpu_prices.db \
+          --out data/parquet
+
+    - name: Sync Parquet snapshot to S3
       if: success()
+      # --size-only avoids re-uploading existing snapshot files; only the
+      # newly-emitted file is pushed.
       run: |
-        find data/ -name "*.log" -type f -mtime +30 -delete 2>/dev/null || true
+        aws s3 sync data/parquet/prices/ \
+          s3://hubbard-gpu-price-data/prices/ \
+          --size-only

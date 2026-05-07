@@ -28,6 +28,13 @@ echo "Step 1: Collecting GPU prices from gpuhunt..." | tee -a "$LOGFILE"
 "$PYTHON" collect.py -v 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
+# Step 1b: Emit the new snapshot as a Parquet file (for the Streamlit app)
+echo "Step 1b: Emitting latest snapshot as Parquet..." | tee -a "$LOGFILE"
+"$PYTHON" scripts/emit_latest_parquet.py \
+    --db data/gpu_prices.db \
+    --out data/parquet 2>&1 | tee -a "$LOGFILE"
+echo "" | tee -a "$LOGFILE"
+
 # Step 2: Generate reports
 echo "Step 2: Generating reports..." | tee -a "$LOGFILE"
 
