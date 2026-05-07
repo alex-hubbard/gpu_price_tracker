@@ -33,19 +33,30 @@ jobs:
     - name: Create necessary directories
       run: |
         mkdir -p data
-    
-    - name: Collect GPU prices
-      run: |
-        echo "Collecting GPU prices from gpuhunt..."
-        python3 collect.py -v --stats
-        echo "Collection complete!"
 
     - name: Configure AWS credentials (OIDC)
       uses: aws-actions/configure-aws-credentials@v4
       with:
         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
         aws-region: us-east-1
-    
+
+    - name: Download existing database from S3
+      # Pull the running DB so collect.py appends a new snapshot rather than
+      # starting fresh. `|| true` lets the very first run succeed when the
+      # object does not yet exist.
+      run: |
+        aws s3 cp "s3://hubbard-gpu-price-data/gpu_prices.db" data/gpu_prices.db || \
+          echo "No existing DB in S3 — starting fresh."
+
+    - name: Collect GPU prices
+      # collect.py exits nonzero when it gathers zero records, which fails the
+      # job and skips the upload step (preventing an empty DB from clobbering
+      # S3).
+      run: |
+        echo "Collecting GPU prices from gpuhunt..."
+        python3 collect.py -v --stats
+        echo "Collection complete!"
+
     - name: Upload database to S3
       if: success()
       run: |

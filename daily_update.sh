@@ -5,6 +5,12 @@
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd "$SCRIPT_DIR"
 
+# cron's PATH resolves `python3` to /usr/bin/python3, which lacks gpuhunt and
+# matplotlib. Pin to the anaconda interpreter (overridable via $PYTHON) so the
+# scheduled run sees the same packages as an interactive shell.
+export PYTHON="${PYTHON:-/home/afhubbard/anaconda3/bin/python3}"
+export PATH="$(dirname "$PYTHON"):$PATH"
+
 TIMESTAMP=$(date +%Y%m%d_%H%M)
 LOGFILE="data/daily_update_${TIMESTAMP}.log"
 
@@ -19,23 +25,23 @@ echo "" | tee -a "$LOGFILE"
 
 # Step 1: Collect GPU prices
 echo "Step 1: Collecting GPU prices from gpuhunt..." | tee -a "$LOGFILE"
-python3 collect.py -v 2>&1 | tee -a "$LOGFILE"
+"$PYTHON" collect.py -v 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
 # Step 2: Generate reports
 echo "Step 2: Generating reports..." | tee -a "$LOGFILE"
 
 # Comprehensive report
-python3 report.py --all > "reports/report_${TIMESTAMP}.txt" 2>&1
+"$PYTHON" report.py --all > "reports/report_${TIMESTAMP}.txt" 2>&1
 echo "  ✓ Saved: reports/report_${TIMESTAMP}.txt" | tee -a "$LOGFILE"
 
 # Best deals report
-python3 report.py --best-deals --limit 20 > "reports/best_deals_${TIMESTAMP}.txt" 2>&1
+"$PYTHON" report.py --best-deals --limit 20 > "reports/best_deals_${TIMESTAMP}.txt" 2>&1
 echo "  ✓ Saved: reports/best_deals_${TIMESTAMP}.txt" | tee -a "$LOGFILE"
 
 # GPU-specific reports
 for GPU in H100 A100 L40S RTX4090 RTX5090; do
-    python3 report.py --best-deals --gpu-type $GPU --limit 10 > "reports/best_${GPU}_${TIMESTAMP}.txt" 2>&1
+    "$PYTHON" report.py --best-deals --gpu-type $GPU --limit 10 > "reports/best_${GPU}_${TIMESTAMP}.txt" 2>&1
     echo "  ✓ Saved: reports/best_${GPU}_${TIMESTAMP}.txt" | tee -a "$LOGFILE"
 done
 
@@ -43,12 +49,12 @@ echo "" | tee -a "$LOGFILE"
 
 # Step 3: Generate plots
 echo "Step 3: Generating visualization plots..." | tee -a "$LOGFILE"
-python3 plot.py --top-n 25 2>&1 | tee -a "$LOGFILE"
+"$PYTHON" plot.py --top-n 25 2>&1 | tee -a "$LOGFILE"
 echo "" | tee -a "$LOGFILE"
 
 # Step 4: Database statistics
 echo "Step 4: Database statistics:" | tee -a "$LOGFILE"
-python3 -c "
+"$PYTHON" -c "
 from database import PriceDatabase
 db = PriceDatabase()
 stats = db.get_stats()

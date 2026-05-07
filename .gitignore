@@ -55,3 +55,6 @@ reports/figures/*
 analysis.ipynb
 data/
 reports/
+
+# Streamlit
+streamlit_app/.streamlit/secrets.toml

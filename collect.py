@@ -364,17 +364,17 @@ def main():
                 db = PriceDatabase()
                 timestamp = datetime.now()
                 stored = db.store_prices(instances, timestamp=timestamp)
-                
+
                 if args.verbose:
                     print(f"\nStored {stored} records to database")
-                
+
                 total, stored = len(instances), stored
             else:
                 total, stored = 0, 0
         else:
             # Collect all prices
             total, stored = collect_all_prices(verbose=args.verbose)
-        
+
         if args.stats:
             db = PriceDatabase()
             stats = db.get_stats()
@@ -385,7 +385,15 @@ def main():
             print(f"  Last snapshot: {stats['last_snapshot']}")
             print(f"  Providers tracked: {stats['providers']}")
             print(f"  GPU types tracked: {stats['gpu_types']}")
-        
+
+        if total == 0:
+            print(
+                "ERROR: collection produced 0 records — "
+                "exiting nonzero so callers (cron, CI) do not "
+                "treat an empty run as success.",
+                file=sys.stderr,
+            )
+            sys.exit(2)
         sys.exit(0)
     except Exception as e:
         print(f"FATAL ERROR: {e}", file=sys.stderr)
