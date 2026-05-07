@@ -2,3 +2,6 @@ streamlit>=1.32
 pandas>=2.0
 plotly>=5.18
 duckdb>=1.0
+# DuckDB pulls pytz lazily when materializing tz-aware timestamps from Parquet
+# into pandas; declare it explicitly so Streamlit Cloud installs it.
+pytz>=2024.1
