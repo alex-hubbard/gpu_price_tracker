@@ -3,8 +3,10 @@
 Public-facing visualization for the cross-cloud GPU pricing data this repo
 collects. Reads partitioned Parquet files from S3 via DuckDB's `httpfs`
 extension — the app **never downloads the full dataset**; each query pulls
-only the bytes (and only the partitions) it needs. Four tabs: latest
-prices, price trends per GPU family, spot-vs-on-demand spread, and an
+only the bytes (and only the partitions) it needs. Six tabs: latest
+prices, price trends per GPU family, spot-vs-on-demand spread, regional
+dispersion, a **Market analysis** tab that embeds the 15-slide deck from
+`deck/gpu_market_deck.html` (built by `deck/build_deck.py`), and an
 About / Methodology page that includes BibTeX citation and bulk-download
 snippets.
 

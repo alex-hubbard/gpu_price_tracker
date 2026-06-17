@@ -1,0 +1,567 @@
+provider,raw_region,region_canonical,country,lat,lon,region_group
+aws,af-south-1,af-south-capetown,ZA,-33.9200,18.4200,Africa
+aws,af-south-1-los-1,af-south-capetown-zone,ZA,-33.9200,18.4200,Africa
+aws,ap-east-1,ap-east-hongkong,HK,22.3200,114.1700,APAC East
+aws,ap-east-2,ap-east-taiwan,TW,23.7000,120.9600,APAC East
+aws,ap-northeast-1,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+aws,ap-northeast-1-tpe-1,ap-northeast-tokyo-zone,JP,35.6800,139.7600,APAC East
+aws,ap-northeast-1-wl1-kix1,ap-northeast-tokyo-zone,JP,35.6800,139.7600,APAC East
+aws,ap-northeast-1-wl1-nrt1,ap-northeast-tokyo-zone,JP,35.6800,139.7600,APAC East
+aws,ap-northeast-2,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+aws,ap-northeast-2-wl1-cjj1,ap-northeast-seoul-zone,KR,37.5700,126.9800,APAC East
+aws,ap-northeast-2-wl1-sel1,ap-northeast-seoul-zone,KR,37.5700,126.9800,APAC East
+aws,ap-northeast-3,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+aws,ap-south-1,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+aws,ap-south-1-ccu-1,ap-south-mumbai-zone,IN,19.0800,72.8800,APAC South
+aws,ap-south-1-del-1,ap-south-mumbai-zone,IN,19.0800,72.8800,APAC South
+aws,ap-south-2,ap-south-hyderabad,IN,17.3900,78.4900,APAC South
+aws,ap-southeast-1,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+aws,ap-southeast-1-bkk-1,ap-southeast-singapore-zone,SG,1.3500,103.8200,APAC Southeast
+aws,ap-southeast-1-mnl-1,ap-southeast-singapore-zone,SG,1.3500,103.8200,APAC Southeast
+aws,ap-southeast-2,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+aws,ap-southeast-2-akl-1,ap-southeast-sydney-zone,AU,-33.8700,151.2100,APAC Southeast
+aws,ap-southeast-2-per-1,ap-southeast-sydney-zone,AU,-33.8700,151.2100,APAC Southeast
+aws,ap-southeast-3,ap-southeast-jakarta,ID,-6.2100,106.8500,APAC Southeast
+aws,ap-southeast-4,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+aws,ap-southeast-5,ap-southeast-malaysia,MY,3.1400,101.6900,APAC Southeast
+aws,ap-southeast-6,ap-southeast-newzealand,NZ,-36.8500,174.7600,APAC Southeast
+aws,ap-southeast-7,ap-southeast-bangkok,TH,13.7500,100.5000,APAC Southeast
+aws,ca-central-1,ca-central-quebec,CA,45.5000,-73.5000,North America East
+aws,ca-central-1-wl1-yto1,ca-central-quebec-zone,CA,45.5000,-73.5000,North America East
+aws,ca-west-1,ca-west-calgary,CA,51.0500,-114.0700,North America West
+aws,eu-central-1,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+aws,eu-central-1-ham-1,eu-central-frankfurt-zone,DE,50.1100,8.6800,Europe Central
+aws,eu-central-1-waw-1,eu-central-frankfurt-zone,DE,50.1100,8.6800,Europe Central
+aws,eu-central-1-wl1-ber1,eu-central-frankfurt-zone,DE,50.1100,8.6800,Europe Central
+aws,eu-central-1-wl1-dtm1,eu-central-frankfurt-zone,DE,50.1100,8.6800,Europe Central
+aws,eu-central-1-wl1-muc1,eu-central-frankfurt-zone,DE,50.1100,8.6800,Europe Central
+aws,eu-central-2,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+aws,eu-north-1,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+aws,eu-north-1-cph-1,eu-north-stockholm-zone,SE,59.3300,18.0700,Europe North
+aws,eu-north-1-hel-1,eu-north-stockholm-zone,SE,59.3300,18.0700,Europe North
+aws,eu-south-1,eu-south-milan,IT,45.4600,9.1900,Europe South
+aws,eu-south-2,eu-south-spain,ES,40.4200,-3.7000,Europe South
+aws,eu-west-1,eu-west-ireland,IE,53.3500,-6.2600,Europe West
+aws,eu-west-2,eu-west-london,GB,51.5100,-0.1300,Europe West
+aws,eu-west-2-wl1-lon1,eu-west-london-zone,GB,51.5100,-0.1300,Europe West
+aws,eu-west-2-wl1-man1,eu-west-london-zone,GB,51.5100,-0.1300,Europe West
+aws,eu-west-2-wl2-man1,eu-west-london-zone,GB,51.5100,-0.1300,Europe West
+aws,eu-west-3,eu-west-paris,FR,48.8600,2.3500,Europe West
+aws,eu-west-3-wl1-cmn1,eu-west-paris-zone,FR,48.8600,2.3500,Europe West
+aws,eu-west-3-wl1-dss1,eu-west-paris-zone,FR,48.8600,2.3500,Europe West
+aws,il-central-1,il-central-telaviv,IL,32.0800,34.7800,Middle East
+aws,me-central-1,me-central-uae,AE,25.2700,55.3100,Middle East
+aws,me-south-1,me-south-bahrain,BH,26.0700,50.5500,Middle East
+aws,me-south-1-mct-1,me-south-bahrain-zone,BH,26.0700,50.5500,Middle East
+aws,mx-central-1,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+aws,sa-east-1,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+aws,us-east-1,us-east-virginia,US,38.1300,-78.4500,North America East
+aws,us-east-1-atl-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-bos-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-bue-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-chi-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-dfw-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-iah-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-lim-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-mci-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-mia-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-msp-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-nyc-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-phl-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-qro-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-scl-1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-atl1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-bna1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-chi1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-clt1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-dfw1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-dtw1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-foe1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-iah1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-mia1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-msp1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-nyc1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-tpa1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-1-wl1-was1,us-east-virginia-zone,US,38.1300,-78.4500,North America East
+aws,us-east-2,us-east-ohio,US,40.4100,-82.9100,North America East
+aws,us-gov-east-1,us-gov-east,US,38.1300,-78.4500,GovCloud
+aws,us-gov-west-1,us-gov-west,US,45.8400,-119.7000,GovCloud
+aws,us-west-1,us-west-california,US,37.3500,-121.9600,North America West
+aws,us-west-2,us-west-oregon,US,45.8400,-119.7000,North America West
+aws,us-west-2-den-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-hnl-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-las-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-lax-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-pdx-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-phx-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-sea-1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1-den1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1-las1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1-lax1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1-phx1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+aws,us-west-2-wl1-sea1,us-west-oregon-zone,US,45.8400,-119.7000,North America West
+azure,attatlanta1,us-east-atlanta-att,US,33.7500,-84.3900,North America East
+azure,attdallas1,us-south-dallas-att,US,32.7800,-96.8000,North America Central
+azure,attdetroit1,us-east-detroit-att,US,42.3300,-83.0500,North America East
+azure,attnewyork1,us-east-newyork-att,US,40.7100,-74.0100,North America East
+azure,australiacentral,ap-southeast-canberra,AU,-35.2800,149.1300,APAC Southeast
+azure,australiacentral2,ap-southeast-canberra,AU,-35.2800,149.1300,APAC Southeast
+azure,australiaeast,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+azure,australiasoutheast,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+azure,austriaeast,eu-central-vienna,AT,48.2100,16.3700,Europe Central
+azure,belgiumcentral,eu-west-belgium,BE,50.8500,4.3500,Europe West
+azure,brazilsouth,sa-south-saopaulo,BR,-23.5500,-46.6300,South America
+azure,brazilsoutheast,sa-southeast-rio,BR,-22.9100,-43.1700,South America
+azure,canadacentral,ca-central-toronto,CA,43.6500,-79.3800,North America East
+azure,canadaeast,ca-east-quebec,CA,46.8100,-71.2100,North America East
+azure,centralindia,ap-south-pune,IN,18.5200,73.8500,APAC South
+azure,centralus,us-central-iowa,US,41.8800,-93.1000,North America Central
+azure,chilecentral,sa-west-santiago,CL,-33.4500,-70.6600,South America
+azure,denmarkeast,eu-north-copenhagen,DK,55.6800,12.5700,Europe North
+azure,eastasia,ap-east-hongkong,HK,22.3200,114.1700,APAC East
+azure,eastus,us-east-virginia,US,38.1300,-78.4500,North America East
+azure,eastus2,us-east-virginia,US,38.1300,-78.4500,North America East
+azure,francecentral,eu-west-paris,FR,48.8600,2.3500,Europe West
+azure,francesouth,eu-south-marseille,FR,43.3000,5.3700,Europe South
+azure,germanynorth,eu-central-berlin,DE,52.5200,13.4000,Europe Central
+azure,germanywestcentral,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+azure,indonesiacentral,ap-southeast-jakarta,ID,-6.2100,106.8500,APAC Southeast
+azure,israelcentral,me-west-telaviv,IL,32.0800,34.7800,Middle East
+azure,israelnorthwest,me-west-telaviv,IL,32.0800,34.7800,Middle East
+azure,italynorth,eu-south-milan,IT,45.4600,9.1900,Europe South
+azure,japaneast,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+azure,japanwest,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+azure,jioindiacentral,ap-south-pune,IN,18.5200,73.8500,APAC South
+azure,jioindiawest,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+azure,koreacentral,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+azure,koreasouth,ap-northeast-busan,KR,35.1800,129.0800,APAC East
+azure,malaysiawest,ap-southeast-kualalumpur,MY,3.1400,101.6900,APAC Southeast
+azure,mexicocentral,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+azure,newzealandnorth,ap-southeast-auckland,NZ,-36.8500,174.7600,APAC Southeast
+azure,northcentralus,us-north-illinois,US,41.8800,-87.6300,North America Central
+azure,northeurope,eu-north-ireland,IE,53.3500,-6.2600,Europe West
+azure,norwayeast,eu-north-oslo,NO,59.9100,10.7500,Europe North
+azure,norwaywest,eu-north-stavanger,NO,58.9700,5.7300,Europe North
+azure,polandcentral,eu-central-warsaw,PL,52.2300,21.0100,Europe Central
+azure,portland,us-west-oregon,US,45.5200,-122.6800,North America West
+azure,qatarcentral,me-central-doha,QA,25.3500,51.1800,Middle East
+azure,sgxsingapore1,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+azure,southafricanorth,af-north-johannesburg,ZA,-26.2000,28.0500,Africa
+azure,southafricawest,af-south-capetown,ZA,-33.9200,18.4200,Africa
+azure,southcentralus,us-south-texas,US,29.4200,-98.4900,North America Central
+azure,southeastasia,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+azure,southindia,ap-south-chennai,IN,13.0800,80.2700,APAC South
+azure,spaincentral,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+azure,swedencentral,eu-north-sweden,SE,60.1300,18.6400,Europe North
+azure,swedensouth,eu-north-sweden,SE,60.1300,18.6400,Europe North
+azure,switzerlandnorth,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+azure,switzerlandwest,eu-central-geneva,CH,46.2000,6.1500,Europe Central
+azure,uaecentral,me-central-abudhabi,AE,24.4700,54.3700,Middle East
+azure,uaenorth,me-central-dubai,AE,25.2700,55.3100,Middle East
+azure,uksouth,eu-west-london,GB,51.5100,-0.1300,Europe West
+azure,ukwest,eu-west-cardiff,GB,51.4800,-3.1800,Europe West
+azure,usgovarizona,us-gov-arizona,US,33.4500,-112.0700,GovCloud
+azure,usgovtexas,us-gov-texas,US,32.7800,-96.8000,GovCloud
+azure,usgovvirginia,us-gov-virginia,US,38.1300,-78.4500,GovCloud
+azure,westcentralus,us-west-wyoming,US,41.1600,-104.8200,North America West
+azure,westeurope,eu-west-netherlands,NL,52.3700,4.9000,Europe West
+azure,westindia,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+azure,westus,us-west-california,US,37.3500,-121.9600,North America West
+azure,westus2,us-west-washington,US,47.6100,-122.3300,North America West
+azure,westus3,us-west-arizona,US,33.4500,-112.0700,North America West
+cloudrift,ap-east-tw-kn-1,,TW,23.7000,120.9600,APAC East
+cloudrift,eu-west-uk-lo-1,,GB,55.3800,-3.4400,Europe West
+cloudrift,eu-west-uk-lo-2,,GB,55.3800,-3.4400,Europe West
+cloudrift,eu-west-uk-lo-3,,GB,55.3800,-3.4400,Europe West
+cloudrift,na-north-ca-mo-1,,CA,56.1300,-106.3500,North America Central
+cloudrift,na-north-ca-mo-2,,CA,56.1300,-106.3500,North America Central
+cloudrift,us-central-tx-ti-1,,US,39.8300,-98.5800,North America Central
+cloudrift,us-east-fl-nr-1,,US,39.8300,-98.5800,North America Central
+cloudrift,us-east-fl-nr-tpa,,US,39.8300,-98.5800,North America Central
+cloudrift,us-east-nc-nr-1,,US,39.8300,-98.5800,North America Central
+cloudrift,us-east-nc-nr-3,,US,39.8300,-98.5800,North America Central
+cloudrift,us-east-nc-nr-ral,,US,39.8300,-98.5800,North America Central
+cudo,ca-montreal-2,,CA,56.1300,-106.3500,North America Central
+cudo,ca-montreal-3,,CA,56.1300,-106.3500,North America Central
+cudo,fi-tampere-1,,FI,61.9200,25.7500,Europe North
+cudo,gb-bournemouth-1,,GB,55.3800,-3.4400,Europe West
+cudo,gb-manchester-1,,GB,55.3800,-3.4400,Europe West
+cudo,no-kristiansand-1,,NO,60.4700,8.4700,Europe North
+cudo,se-skarholmen-1,,SE,60.1300,18.6400,Europe North
+cudo,se-stockholm-1,,SE,60.1300,18.6400,Europe North
+cudo,us-carlsbad-1,,US,39.8300,-98.5800,North America Central
+cudo,us-dallas-1,,US,39.8300,-98.5800,North America Central
+cudo,us-newyork-1,,US,39.8300,-98.5800,North America Central
+gcp,africa-south1-a,af-south-johannesburg,ZA,-26.2000,28.0500,Africa
+gcp,africa-south1-b,af-south-johannesburg,ZA,-26.2000,28.0500,Africa
+gcp,africa-south1-c,af-south-johannesburg,ZA,-26.2000,28.0500,Africa
+gcp,asia-east1-a,ap-east-taiwan,TW,24.1500,120.6900,APAC East
+gcp,asia-east1-b,ap-east-taiwan,TW,24.1500,120.6900,APAC East
+gcp,asia-east1-c,ap-east-taiwan,TW,24.1500,120.6900,APAC East
+gcp,asia-east2-a,ap-east-hongkong,HK,22.3200,114.1700,APAC East
+gcp,asia-east2-b,ap-east-hongkong,HK,22.3200,114.1700,APAC East
+gcp,asia-east2-c,ap-east-hongkong,HK,22.3200,114.1700,APAC East
+gcp,asia-northeast1-a,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+gcp,asia-northeast1-b,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+gcp,asia-northeast1-c,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+gcp,asia-northeast2-a,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+gcp,asia-northeast2-b,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+gcp,asia-northeast2-c,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+gcp,asia-northeast3-a,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+gcp,asia-northeast3-b,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+gcp,asia-northeast3-c,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+gcp,asia-south1-a,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+gcp,asia-south1-b,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+gcp,asia-south1-c,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+gcp,asia-south2-a,ap-south-delhi,IN,28.6100,77.2100,APAC South
+gcp,asia-south2-b,ap-south-delhi,IN,28.6100,77.2100,APAC South
+gcp,asia-south2-c,ap-south-delhi,IN,28.6100,77.2100,APAC South
+gcp,asia-southeast1-a,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+gcp,asia-southeast1-b,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+gcp,asia-southeast1-c,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+gcp,asia-southeast2-a,ap-southeast-jakarta,ID,-6.2100,106.8500,APAC Southeast
+gcp,asia-southeast2-b,ap-southeast-jakarta,ID,-6.2100,106.8500,APAC Southeast
+gcp,asia-southeast2-c,ap-southeast-jakarta,ID,-6.2100,106.8500,APAC Southeast
+gcp,asia-southeast3-a,ap-southeast-bangkok,TH,13.7500,100.5000,APAC Southeast
+gcp,asia-southeast3-b,ap-southeast-bangkok,TH,13.7500,100.5000,APAC Southeast
+gcp,asia-southeast3-c,ap-southeast-bangkok,TH,13.7500,100.5000,APAC Southeast
+gcp,australia-southeast1-a,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+gcp,australia-southeast1-b,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+gcp,australia-southeast1-c,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+gcp,australia-southeast2-a,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+gcp,australia-southeast2-b,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+gcp,australia-southeast2-c,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+gcp,europe-central2-a,eu-central-warsaw,PL,52.2300,21.0100,Europe Central
+gcp,europe-central2-b,eu-central-warsaw,PL,52.2300,21.0100,Europe Central
+gcp,europe-central2-c,eu-central-warsaw,PL,52.2300,21.0100,Europe Central
+gcp,europe-north1-a,eu-north-finland,FI,60.5500,27.1800,Europe North
+gcp,europe-north1-b,eu-north-finland,FI,60.5500,27.1800,Europe North
+gcp,europe-north1-c,eu-north-finland,FI,60.5500,27.1800,Europe North
+gcp,europe-north2-a,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+gcp,europe-north2-b,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+gcp,europe-north2-c,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+gcp,europe-southwest1-a,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+gcp,europe-southwest1-b,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+gcp,europe-southwest1-c,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+gcp,europe-west1-b,eu-west-belgium,BE,50.5000,4.4700,Europe West
+gcp,europe-west1-c,eu-west-belgium,BE,50.5000,4.4700,Europe West
+gcp,europe-west1-d,eu-west-belgium,BE,50.5000,4.4700,Europe West
+gcp,europe-west10-a,eu-central-berlin,DE,52.5200,13.4000,Europe Central
+gcp,europe-west10-b,eu-central-berlin,DE,52.5200,13.4000,Europe Central
+gcp,europe-west10-c,eu-central-berlin,DE,52.5200,13.4000,Europe Central
+gcp,europe-west12-a,eu-south-turin,IT,45.0700,7.6900,Europe South
+gcp,europe-west12-b,eu-south-turin,IT,45.0700,7.6900,Europe South
+gcp,europe-west12-c,eu-south-turin,IT,45.0700,7.6900,Europe South
+gcp,europe-west2-a,eu-west-london,GB,51.5100,-0.1300,Europe West
+gcp,europe-west2-b,eu-west-london,GB,51.5100,-0.1300,Europe West
+gcp,europe-west2-c,eu-west-london,GB,51.5100,-0.1300,Europe West
+gcp,europe-west3-a,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+gcp,europe-west3-b,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+gcp,europe-west3-c,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+gcp,europe-west4-a,eu-west-netherlands,NL,52.3700,4.9000,Europe West
+gcp,europe-west4-b,eu-west-netherlands,NL,52.3700,4.9000,Europe West
+gcp,europe-west4-c,eu-west-netherlands,NL,52.3700,4.9000,Europe West
+gcp,europe-west6-a,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+gcp,europe-west6-b,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+gcp,europe-west6-c,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+gcp,europe-west8-a,eu-south-milan,IT,45.4600,9.1900,Europe South
+gcp,europe-west8-b,eu-south-milan,IT,45.4600,9.1900,Europe South
+gcp,europe-west8-c,eu-south-milan,IT,45.4600,9.1900,Europe South
+gcp,europe-west9-a,eu-west-paris,FR,48.8600,2.3500,Europe West
+gcp,europe-west9-b,eu-west-paris,FR,48.8600,2.3500,Europe West
+gcp,europe-west9-c,eu-west-paris,FR,48.8600,2.3500,Europe West
+gcp,me-central1-a,me-central-doha,QA,25.3500,51.1800,Middle East
+gcp,me-central1-b,me-central-doha,QA,25.3500,51.1800,Middle East
+gcp,me-central1-c,me-central-doha,QA,25.3500,51.1800,Middle East
+gcp,me-central2-a,me-central-dammam,SA,26.3900,49.9800,Middle East
+gcp,me-central2-b,me-central-dammam,SA,26.3900,49.9800,Middle East
+gcp,me-central2-c,me-central-dammam,SA,26.3900,49.9800,Middle East
+gcp,me-west1-a,me-west-telaviv,IL,32.0800,34.7800,Middle East
+gcp,me-west1-b,me-west-telaviv,IL,32.0800,34.7800,Middle East
+gcp,me-west1-c,me-west-telaviv,IL,32.0800,34.7800,Middle East
+gcp,northamerica-northeast1-a,ca-east-montreal,CA,45.5000,-73.5700,North America East
+gcp,northamerica-northeast1-b,ca-east-montreal,CA,45.5000,-73.5700,North America East
+gcp,northamerica-northeast1-c,ca-east-montreal,CA,45.5000,-73.5700,North America East
+gcp,northamerica-northeast2-a,ca-east-toronto,CA,43.6500,-79.3800,North America East
+gcp,northamerica-northeast2-b,ca-east-toronto,CA,43.6500,-79.3800,North America East
+gcp,northamerica-northeast2-c,ca-east-toronto,CA,43.6500,-79.3800,North America East
+gcp,northamerica-south1-a,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+gcp,northamerica-south1-b,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+gcp,northamerica-south1-c,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+gcp,southamerica-east1-a,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+gcp,southamerica-east1-b,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+gcp,southamerica-east1-c,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+gcp,southamerica-west1-a,sa-west-santiago,CL,-33.4500,-70.6600,South America
+gcp,southamerica-west1-b,sa-west-santiago,CL,-33.4500,-70.6600,South America
+gcp,southamerica-west1-c,sa-west-santiago,CL,-33.4500,-70.6600,South America
+gcp,us-central1-a,us-central-iowa,US,41.8800,-93.1000,North America Central
+gcp,us-central1-b,us-central-iowa,US,41.8800,-93.1000,North America Central
+gcp,us-central1-c,us-central-iowa,US,41.8800,-93.1000,North America Central
+gcp,us-central1-f,us-central-iowa,US,41.8800,-93.1000,North America Central
+gcp,us-east1-b,us-east-southcarolina,US,33.8400,-81.1600,North America East
+gcp,us-east1-c,us-east-southcarolina,US,33.8400,-81.1600,North America East
+gcp,us-east1-d,us-east-southcarolina,US,33.8400,-81.1600,North America East
+gcp,us-east4-a,us-east-virginia,US,38.1300,-78.4500,North America East
+gcp,us-east4-b,us-east-virginia,US,38.1300,-78.4500,North America East
+gcp,us-east4-c,us-east-virginia,US,38.1300,-78.4500,North America East
+gcp,us-east5-a,us-east-ohio,US,39.9600,-82.9900,North America East
+gcp,us-east5-b,us-east-ohio,US,39.9600,-82.9900,North America East
+gcp,us-east5-c,us-east-ohio,US,39.9600,-82.9900,North America East
+gcp,us-south1-a,us-south-dallas,US,32.7800,-96.8000,North America Central
+gcp,us-south1-ai1b,,US,39.8300,-98.5800,North America Central
+gcp,us-south1-b,us-south-dallas,US,32.7800,-96.8000,North America Central
+gcp,us-south1-c,us-south-dallas,US,32.7800,-96.8000,North America Central
+gcp,us-west1-a,us-west-oregon,US,45.8400,-119.7000,North America West
+gcp,us-west1-b,us-west-oregon,US,45.8400,-119.7000,North America West
+gcp,us-west1-c,us-west-oregon,US,45.8400,-119.7000,North America West
+gcp,us-west2-a,us-west-losangeles,US,34.0500,-118.2400,North America West
+gcp,us-west2-b,us-west-losangeles,US,34.0500,-118.2400,North America West
+gcp,us-west2-c,us-west-losangeles,US,34.0500,-118.2400,North America West
+gcp,us-west3-a,us-west-saltlakecity,US,40.7600,-111.8900,North America West
+gcp,us-west3-b,us-west-saltlakecity,US,40.7600,-111.8900,North America West
+gcp,us-west3-c,us-west-saltlakecity,US,40.7600,-111.8900,North America West
+gcp,us-west4-a,us-west-lasvegas,US,36.1700,-115.1400,North America West
+gcp,us-west4-b,us-west-lasvegas,US,36.1700,-115.1400,North America West
+gcp,us-west4-c,us-west-lasvegas,US,36.1700,-115.1400,North America West
+lambdalabs,asia-northeast-1,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+lambdalabs,asia-northeast-2,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+lambdalabs,asia-south-1,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+lambdalabs,australia-east-1,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+lambdalabs,europe-central-1,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+lambdalabs,me-west-1,me-west-telaviv,IL,32.0800,34.7800,Middle East
+lambdalabs,us-east-1,us-east-virginia,US,38.1300,-78.4500,North America East
+lambdalabs,us-east-2,us-east-virginia,US,38.1300,-78.4500,North America East
+lambdalabs,us-east-3,us-east-newyork,US,40.7100,-74.0100,North America East
+lambdalabs,us-midwest-1,us-central-illinois,US,41.8800,-87.6300,North America Central
+lambdalabs,us-midwest-2,,US,39.8300,-98.5800,North America Central
+lambdalabs,us-midwest-3,,US,39.8300,-98.5800,North America Central
+lambdalabs,us-south-1,us-south-texas,US,32.7800,-96.8000,North America Central
+lambdalabs,us-south-2,us-south-texas,US,32.7800,-96.8000,North America Central
+lambdalabs,us-south-3,us-south-texas,US,32.7800,-96.8000,North America Central
+lambdalabs,us-west-1,us-west-california,US,37.3400,-121.8900,North America West
+lambdalabs,us-west-2,us-west-arizona,US,33.4500,-112.0700,North America West
+lambdalabs,us-west-3,us-west-utah,US,40.7600,-111.8900,North America West
+nebius,eu-north1,eu-north-finland,FI,60.5500,27.1800,Europe North
+nebius,eu-west1,eu-west-paris,FR,48.8600,2.3500,Europe West
+nebius,me-west1,me-west-telaviv,IL,32.0800,34.7800,Middle East
+nebius,us-central1,,US,39.8300,-98.5800,North America Central
+oci,af-casablanca-1,af-north-casablanca,MA,33.5700,-7.5900,Africa
+oci,af-johannesburg-1,af-south-johannesburg,ZA,-26.2000,28.0500,Africa
+oci,ap-batam-1,ap-southeast-batam,ID,1.1300,104.0500,APAC Southeast
+oci,ap-chuncheon-1,ap-northeast-chuncheon,KR,37.8800,127.7300,APAC East
+oci,ap-hyderabad-1,ap-south-hyderabad,IN,17.3900,78.4900,APAC South
+oci,ap-kulai-2,ap-southeast-kulai,MY,1.6600,103.6100,APAC Southeast
+oci,ap-melbourne-1,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+oci,ap-mumbai-1,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+oci,ap-osaka-1,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+oci,ap-seoul-1,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+oci,ap-singapore-1,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+oci,ap-singapore-2,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+oci,ap-sydney-1,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+oci,ap-tokyo-1,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+oci,ca-montreal-1,ca-central-quebec,CA,45.5000,-73.5700,North America East
+oci,ca-toronto-1,ca-central-toronto,CA,43.6500,-79.3800,North America East
+oci,eu-amsterdam-1,eu-west-amsterdam,NL,52.3700,4.9000,Europe West
+oci,eu-frankfurt-1,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+oci,eu-madrid-1,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+oci,eu-madrid-3,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+oci,eu-marseille-1,eu-south-marseille,FR,43.3000,5.3700,Europe South
+oci,eu-milan-1,eu-south-milan,IT,45.4600,9.1900,Europe South
+oci,eu-paris-1,eu-west-paris,FR,48.8600,2.3500,Europe West
+oci,eu-stockholm-1,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+oci,eu-turin-1,eu-south-turin,IT,45.0700,7.6900,Europe South
+oci,eu-zurich-1,eu-central-zurich,CH,47.3700,8.5500,Europe Central
+oci,il-jerusalem-1,me-west-jerusalem,IL,31.7800,35.2200,Middle East
+oci,me-abudhabi-1,me-central-abudhabi,AE,24.4700,54.3700,Middle East
+oci,me-dubai-1,me-central-dubai,AE,25.2700,55.3100,Middle East
+oci,me-jeddah-1,me-west-jeddah,SA,21.4900,39.1900,Middle East
+oci,me-riyadh-1,me-central-riyadh,SA,24.7100,46.6800,Middle East
+oci,mx-monterrey-1,mx-central-monterrey,MX,25.6900,-100.3100,North America Central
+oci,mx-queretaro-1,mx-central-queretaro,MX,20.5900,-100.3900,North America Central
+oci,sa-bogota-1,sa-north-bogota,CO,4.7100,-74.0700,South America
+oci,sa-santiago-1,sa-west-santiago,CL,-33.4500,-70.6600,South America
+oci,sa-saopaulo-1,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+oci,sa-valparaiso-1,sa-west-valparaiso,CL,-33.0400,-71.6200,South America
+oci,sa-vinhedo-1,sa-east-vinhedo,BR,-23.0300,-46.9700,South America
+oci,uk-cardiff-1,eu-west-cardiff,GB,51.4800,-3.1800,Europe West
+oci,uk-london-1,eu-west-london,GB,51.5100,-0.1300,Europe West
+oci,us-ashburn-1,us-east-virginia,US,38.1300,-78.4500,North America East
+oci,us-chicago-1,us-central-chicago,US,41.8800,-87.6300,North America Central
+oci,us-phoenix-1,us-west-arizona,US,33.4500,-112.0700,North America West
+oci,us-sanjose-1,us-west-california,US,37.3400,-121.8900,North America West
+runpod,AE,,AE,23.4200,53.8500,Middle East
+runpod,AP-JP-1,,JP,36.2000,138.2500,APAC East
+runpod,CA,,CA,56.1300,-106.3500,North America Central
+runpod,CA-MTL-1,,CA,56.1300,-106.3500,North America Central
+runpod,CA-MTL-3,,CA,56.1300,-106.3500,North America Central
+runpod,CA-MTL-4,,CA,56.1300,-106.3500,North America Central
+runpod,CZ,,CZ,49.8200,15.4700,Europe Central
+runpod,ES,,ES,40.4600,-3.7500,Europe South
+runpod,EU-CZ-1,,CZ,49.8200,15.4700,Europe Central
+runpod,EU-FR-1,,FR,46.2300,2.2100,Europe West
+runpod,EU-NL-1,,NL,52.1300,5.2900,Europe West
+runpod,EU-RO-1,,RO,45.9400,24.9700,Europe Central
+runpod,EU-SE-1,,SE,60.1300,18.6400,Europe North
+runpod,EUR-IS-1,,IS,64.9600,-19.0200,Europe North
+runpod,EUR-IS-2,,IS,64.9600,-19.0200,Europe North
+runpod,EUR-IS-3,,IS,64.9600,-19.0200,Europe North
+runpod,EUR-IS-4,,IS,64.9600,-19.0200,Europe North
+runpod,EUR-NO-1,,NO,60.4700,8.4700,Europe North
+runpod,EUR-NO-2,,NO,60.4700,8.4700,Europe North
+runpod,FR,,FR,46.2300,2.2100,Europe West
+runpod,GB,,GB,55.3800,-3.4400,Europe West
+runpod,HR,,HR,45.1000,15.2000,Europe South
+runpod,JP,,JP,36.2000,138.2500,APAC East
+runpod,OC-AU-1,,AU,-25.2700,133.7800,APAC Southeast
+runpod,PT,,PT,39.4000,-8.2200,Europe South
+runpod,SE,,SE,60.1300,18.6400,Europe North
+runpod,SK,,SK,48.6700,19.7000,Europe Central
+runpod,TT,,TT,10.6900,-61.2200,South America
+runpod,TW,,TW,23.7000,120.9600,APAC East
+runpod,US,,US,39.8300,-98.5800,North America Central
+runpod,US-CA-2,,US,39.8300,-98.5800,North America Central
+runpod,US-GA-2,,US,39.8300,-98.5800,North America Central
+runpod,US-IL-1,,US,39.8300,-98.5800,North America Central
+runpod,US-IL-2,,US,39.8300,-98.5800,North America Central
+runpod,US-KS-2,,US,39.8300,-98.5800,North America Central
+runpod,US-MD-1,,US,39.8300,-98.5800,North America Central
+runpod,US-MO-1,,US,39.8300,-98.5800,North America Central
+runpod,US-MO-2,,US,39.8300,-98.5800,North America Central
+runpod,US-NC-1,,US,39.8300,-98.5800,North America Central
+runpod,US-NC-2,,US,39.8300,-98.5800,North America Central
+runpod,US-NE-1,,US,39.8300,-98.5800,North America Central
+runpod,US-TX-3,,US,39.8300,-98.5800,North America Central
+runpod,US-TX-4,,US,39.8300,-98.5800,North America Central
+runpod,US-WA-1,,US,39.8300,-98.5800,North America Central
+runpod,ZA,,ZA,-30.5600,22.9400,Africa
+vastai,,,,,,
+vastai,ar-argentina,,AR,-38.4200,-63.6200,South America
+vastai,au-australia,,AU,-25.2700,133.7800,APAC Southeast
+vastai,ba-bosniaandherzegovina,,BA,43.9200,17.6800,Europe South
+vastai,be-belgium,,BE,50.5000,4.4700,Europe West
+vastai,bg-bulgaria,,BG,42.7300,25.4900,Europe South
+vastai,br-brazil,,BR,-14.2400,-51.9300,South America
+vastai,by-belarus,,BY,53.7100,27.9500,Europe Central
+vastai,ca-,,CA,56.1300,-106.3500,North America Central
+vastai,ca-alberta,,CA,56.1300,-106.3500,North America Central
+vastai,ca-britishcolumbia,,CA,56.1300,-106.3500,North America Central
+vastai,ca-ontario,,CA,56.1300,-106.3500,North America Central
+vastai,ca-quebec,,CA,56.1300,-106.3500,North America Central
+vastai,ca-saskatchewan,,CA,56.1300,-106.3500,North America Central
+vastai,ch-switzerland,,CH,46.8200,8.2300,Europe Central
+vastai,cn-,,CN,35.8600,104.2000,APAC East
+vastai,cn-anhui,,CN,35.8600,104.2000,APAC East
+vastai,cn-fujian,,CN,35.8600,104.2000,APAC East
+vastai,cn-guangdong,,CN,35.8600,104.2000,APAC East
+vastai,cn-jiangsu,,CN,35.8600,104.2000,APAC East
+vastai,cn-shanghai,,CN,35.8600,104.2000,APAC East
+vastai,cz-czechia,,CZ,49.8200,15.4700,Europe Central
+vastai,de-germany,,DE,51.1700,10.4500,Europe Central
+vastai,dk-denmark,,DK,56.2600,9.5000,Europe North
+vastai,ee-estonia,,EE,58.6000,25.0100,Europe North
+vastai,es-spain,,ES,40.4600,-3.7500,Europe South
+vastai,fi-finland,,FI,61.9200,25.7500,Europe North
+vastai,fr-france,,FR,46.2300,2.2100,Europe West
+vastai,gb-unitedkingdom,,GB,55.3800,-3.4400,Europe West
+vastai,gr-greece,,GR,39.0700,21.8200,Europe South
+vastai,hk-hongkong,,HK,22.3200,114.1700,APAC East
+vastai,hu-hungary,,HU,47.1600,19.5000,Europe Central
+vastai,il-israel,,IL,31.0500,34.8500,Middle East
+vastai,in-india,,IN,20.5900,78.9600,APAC South
+vastai,is-iceland,,IS,64.9600,-19.0200,Europe North
+vastai,it-italy,,IT,41.8700,12.5700,Europe South
+vastai,jp-japan,,JP,36.2000,138.2500,APAC East
+vastai,kr-southkorea,,KR,35.9100,127.7700,APAC East
+vastai,kz-kazakhstan,,KZ,48.0200,66.9200,APAC East
+vastai,lt-lithuania,,LT,55.1700,23.8800,Europe North
+vastai,lv-latvia,,LV,56.8800,24.6000,Europe North
+vastai,mk-northmacedonia,,MK,41.6100,21.7500,Europe South
+vastai,mo-macao,,MO,22.2000,113.5400,APAC East
+vastai,my-malaysia,,MY,4.2100,101.9800,APAC Southeast
+vastai,nl-netherlands,,NL,52.1300,5.2900,Europe West
+vastai,nl-thenetherlands,,NL,52.1300,5.2900,Europe West
+vastai,no-norway,,NO,60.4700,8.4700,Europe North
+vastai,pl-poland,,PL,51.9200,19.1500,Europe Central
+vastai,pt-portugal,,PT,39.4000,-8.2200,Europe South
+vastai,ro-romania,,RO,45.9400,24.9700,Europe Central
+vastai,ru-,,RU,61.5200,105.3200,Europe Central
+vastai,ru-chelyabinskoblast,,RU,61.5200,105.3200,Europe Central
+vastai,ru-rostovoblast,,RU,61.5200,105.3200,Europe Central
+vastai,ru-st.-petersburg,,RU,61.5200,105.3200,Europe Central
+vastai,ru-voronezhoblast,,RU,61.5200,105.3200,Europe Central
+vastai,se-sweden,,SE,60.1300,18.6400,Europe North
+vastai,sg-singapore,,SG,1.3500,103.8200,APAC Southeast
+vastai,si-slovenia,,SI,46.1500,14.9900,Europe South
+vastai,sk-slovakia,,SK,48.6700,19.7000,Europe Central
+vastai,th-thailand,,TH,15.8700,100.9900,APAC Southeast
+vastai,tr-türkiye,,TR,38.9600,35.2400,Europe South
+vastai,ua-ukraine,,UA,48.3800,31.1700,Europe Central
+vastai,us-,,US,39.8300,-98.5800,North America Central
+vastai,us-arizona,,US,39.8300,-98.5800,North America Central
+vastai,us-california,,US,39.8300,-98.5800,North America Central
+vastai,us-connecticut,,US,39.8300,-98.5800,North America Central
+vastai,us-districtofcolumbia,,US,39.8300,-98.5800,North America Central
+vastai,us-florida,,US,39.8300,-98.5800,North America Central
+vastai,us-illinois,,US,39.8300,-98.5800,North America Central
+vastai,us-indiana,,US,39.8300,-98.5800,North America Central
+vastai,us-iowa,,US,39.8300,-98.5800,North America Central
+vastai,us-kansas,,US,39.8300,-98.5800,North America Central
+vastai,us-kentucky,,US,39.8300,-98.5800,North America Central
+vastai,us-maine,,US,39.8300,-98.5800,North America Central
+vastai,us-massachusetts,,US,39.8300,-98.5800,North America Central
+vastai,us-michigan,,US,39.8300,-98.5800,North America Central
+vastai,us-minnesota,,US,39.8300,-98.5800,North America Central
+vastai,us-nebraska,,US,39.8300,-98.5800,North America Central
+vastai,us-nevada,,US,39.8300,-98.5800,North America Central
+vastai,us-newyork,,US,39.8300,-98.5800,North America Central
+vastai,us-northcarolina,,US,39.8300,-98.5800,North America Central
+vastai,us-ohio,,US,39.8300,-98.5800,North America Central
+vastai,us-oklahoma,,US,39.8300,-98.5800,North America Central
+vastai,us-oregon,,US,39.8300,-98.5800,North America Central
+vastai,us-pennsylvania,,US,39.8300,-98.5800,North America Central
+vastai,us-southcarolina,,US,39.8300,-98.5800,North America Central
+vastai,us-tennessee,,US,39.8300,-98.5800,North America Central
+vastai,us-texas,,US,39.8300,-98.5800,North America Central
+vastai,us-utah,,US,39.8300,-98.5800,North America Central
+vastai,us-virginia,,US,39.8300,-98.5800,North America Central
+vastai,us-washington,,US,39.8300,-98.5800,North America Central
+vastai,us-wisconsin,,US,39.8300,-98.5800,North America Central
+vastai,vn-vietnam,,VN,14.0600,108.2800,APAC Southeast
+verda,FIN-01,eu-north-finland,FI,61.9200,25.7500,Europe North
+verda,FIN-02,eu-north-finland,FI,61.9200,25.7500,Europe North
+verda,FIN-03,eu-north-finland,FI,61.9200,25.7500,Europe North
+vultr,,,,,,
+vultr,ams,eu-west-amsterdam,NL,52.3700,4.9000,Europe West
+vultr,atl,us-east-atlanta,US,33.7500,-84.3900,North America East
+vultr,blr,ap-south-bangalore,IN,12.9700,77.5900,APAC South
+vultr,bom,ap-south-mumbai,IN,19.0800,72.8800,APAC South
+vultr,cdg,eu-west-paris,FR,48.8600,2.3500,Europe West
+vultr,del,ap-south-delhi,IN,28.6100,77.2100,APAC South
+vultr,dfw,us-south-dallas,US,32.7800,-96.8000,North America Central
+vultr,ewr,us-east-newjersey,US,40.6900,-74.1700,North America East
+vultr,fra,eu-central-frankfurt,DE,50.1100,8.6800,Europe Central
+vultr,hnl,us-west-honolulu,US,21.3100,-157.8600,North America West
+vultr,icn,ap-northeast-seoul,KR,37.5700,126.9800,APAC East
+vultr,itm,ap-northeast-osaka,JP,34.6900,135.5000,APAC East
+vultr,jnb,af-south-johannesburg,ZA,-26.2000,28.0500,Africa
+vultr,lax,us-west-losangeles,US,34.0500,-118.2400,North America West
+vultr,lhr,eu-west-london,GB,51.5100,-0.1300,Europe West
+vultr,mad,eu-south-madrid,ES,40.4200,-3.7000,Europe South
+vultr,man,eu-west-manchester,GB,53.4800,-2.2400,Europe West
+vultr,mel,ap-southeast-melbourne,AU,-37.8100,144.9600,APAC Southeast
+vultr,mex,mx-central-mexico,MX,19.4300,-99.1300,North America Central
+vultr,mia,us-east-miami,US,25.7600,-80.1900,North America East
+vultr,nrt,ap-northeast-tokyo,JP,35.6800,139.7600,APAC East
+vultr,ord,us-central-chicago,US,41.8800,-87.6300,North America Central
+vultr,sao,sa-east-saopaulo,BR,-23.5500,-46.6300,South America
+vultr,scl,sa-west-santiago,CL,-33.4500,-70.6600,South America
+vultr,sea,us-west-seattle,US,47.6100,-122.3300,North America West
+vultr,sgp,ap-southeast-singapore,SG,1.3500,103.8200,APAC Southeast
+vultr,sjc,us-west-california,US,37.3400,-121.8900,North America West
+vultr,sto,eu-north-stockholm,SE,59.3300,18.0700,Europe North
+vultr,syd,ap-southeast-sydney,AU,-33.8700,151.2100,APAC Southeast
+vultr,tlv,me-west-telaviv,IL,32.0800,34.7800,Middle East
+vultr,waw,eu-central-warsaw,PL,52.2300,21.0100,Europe Central
+vultr,yto,ca-central-toronto,CA,43.6500,-79.3800,North America East

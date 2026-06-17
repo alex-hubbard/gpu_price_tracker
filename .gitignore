@@ -42,10 +42,11 @@ ENV/
 .DS_Store
 Thumbs.db
 CHANGELOG.md
-# Data and reports are tracked via Git LFS (see .gitattributes)
-# Only ignore untracked files in these directories
+# Data and reports — ignore generated artifacts but check in the small,
+# hand-edited reference tables that the runtime depends on.
 data/*
 !data/gpu_prices.db
+!data/regions.csv
 !data/*.log
 reports/*
 !reports/*.txt
@@ -53,8 +54,6 @@ reports/*
 reports/figures/*
 !reports/figures/*.png
 analysis.ipynb
-data/
-reports/
 
 # Streamlit
 streamlit_app/.streamlit/secrets.toml

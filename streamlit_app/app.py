@@ -16,12 +16,14 @@ from queries import (  # noqa: E402
     load_filter_options,
     load_latest_snapshot,
     load_provider_freshness,
+    load_regional_dispersion,
     load_spread,
     load_stats,
     load_trends,
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
+DECK_PATH = REPO_ROOT / "deck" / "gpu_market_deck.html"
 GITHUB_URL = "https://github.com/alex-hubbard/gpu_price_tracker"
 PUBLIC_S3_URL = "s3://hubbard-gpu-price-data/prices/"
 HF_DATASET_URL = "https://huggingface.co/datasets/afhubbard/gpu-prices"
@@ -129,6 +131,12 @@ provider_filter = st.sidebar.multiselect(
     default=[],
     help="Empty = all providers",
 )
+region_group_filter = st.sidebar.multiselect(
+    "Region group",
+    options=options.get("region_groups", []),
+    default=[],
+    help="Empty = all region groups (continental buckets across providers)",
+)
 spot_choice = st.sidebar.radio(
     "Pricing type",
     ["Both", "On-demand only", "Spot only"],
@@ -145,8 +153,23 @@ elif spot_choice == "On-demand only":
     is_spot_filter = False
 
 # ---------- Tabs ----------
-tab_table, tab_trends, tab_spread, tab_about = st.tabs(
-    ["Latest prices", "Price trends", "Spot vs on-demand", "About / Methodology"]
+@st.cache_data(show_spinner=False)
+def _load_deck() -> str | None:
+    """Read the self-contained slide deck HTML bundled in the repo, if present."""
+    if DECK_PATH.exists():
+        return DECK_PATH.read_text(encoding="utf-8")
+    return None
+
+
+tab_table, tab_trends, tab_spread, tab_region, tab_deck, tab_about = st.tabs(
+    [
+        "Latest prices",
+        "Price trends",
+        "Spot vs on-demand",
+        "Regional dispersion",
+        "Market analysis",
+        "About / Methodology",
+    ]
 )
 
 # ----- Tab 1: Latest prices -----
@@ -156,6 +179,8 @@ with tab_table:
         df = df[df["gpu_type"].isin(gpu_filter)]
     if provider_filter:
         df = df[df["provider"].isin(provider_filter)]
+    if region_group_filter:
+        df = df[df["region_group"].isin(region_group_filter)]
     if is_spot_filter is not None:
         df = df[df["is_spot"] == is_spot_filter]
 
@@ -186,6 +211,9 @@ with tab_table:
                 "vcpus",
                 "ram_gb",
                 "region",
+                "region_canonical",
+                "region_group",
+                "country",
                 "is_spot",
                 "price_per_hour",
                 "price_per_gpu_hour",
@@ -203,6 +231,10 @@ with tab_table:
             "available": st.column_config.CheckboxColumn("Available"),
             "gpu_memory_gb": st.column_config.NumberColumn("VRAM (GB)"),
             "ram_gb": st.column_config.NumberColumn("RAM (GB)"),
+            "region": st.column_config.TextColumn("Raw region"),
+            "region_canonical": st.column_config.TextColumn("Canonical region"),
+            "region_group": st.column_config.TextColumn("Group"),
+            "country": st.column_config.TextColumn("Country"),
         },
         hide_index=True,
         use_container_width=True,
@@ -223,6 +255,7 @@ with tab_trends:
     trends = load_trends(
         gpu_types=default_gpus,
         providers=tuple(provider_filter),
+        region_groups=tuple(region_group_filter),
         is_spot=is_spot_filter,
         days=lookback_days,
     )
@@ -317,7 +350,111 @@ with tab_spread:
         with st.expander("Underlying daily prices"):
             st.dataframe(spread, hide_index=True, use_container_width=True)
 
-# ----- Tab 4: About / Methodology -----
+# ----- Tab 4: Regional dispersion -----
+with tab_region:
+    st.markdown(
+        "Daily $/GPU-hour for one GPU family across the regions a single "
+        "provider exposes it in. Wide spreads mean the buyer can save by "
+        "moving regions; tight spreads mean the provider is uniformly "
+        "priced. Per `MODELING_GPU_USAGE_TRENDS.md` §3.4."
+    )
+
+    rd_cols = st.columns(2)
+    rd_provider = rd_cols[0].selectbox(
+        "Provider",
+        options=options["providers"],
+        index=options["providers"].index("aws")
+        if "aws" in options["providers"]
+        else 0,
+        key="rd_provider",
+    )
+    rd_gpu = rd_cols[1].selectbox(
+        "GPU family",
+        options=options["gpu_types"],
+        index=options["gpu_types"].index("H100")
+        if "H100" in options["gpu_types"]
+        else 0,
+        key="rd_gpu",
+    )
+
+    rd = load_regional_dispersion(rd_gpu, rd_provider, days=lookback_days)
+    if rd.empty:
+        st.warning(
+            f"No listings for **{rd_gpu}** on **{rd_provider}** in the last "
+            f"{lookback_days} days."
+        )
+    else:
+        # Per-region time series.
+        fig = px.line(
+            rd,
+            x="day",
+            y="avg_price_per_gpu_hour",
+            color="region",
+            labels={
+                "day": "Date",
+                "avg_price_per_gpu_hour": "Avg $/GPU-hr",
+                "region": "Region",
+            },
+            title=f"{rd_provider} {rd_gpu}: $/GPU-hr by region",
+        )
+        fig.update_layout(yaxis_tickprefix="$", hovermode="x unified")
+        st.plotly_chart(fig, use_container_width=True)
+
+        # Per-day coefficient of variation: σ / μ across regions.
+        # A higher CV means more arbitrage opportunity across regions.
+        agg = (
+            rd.groupby("day")["avg_price_per_gpu_hour"]
+            .agg(["mean", "std", "count"])
+            .reset_index()
+        )
+        agg["cv"] = agg["std"] / agg["mean"]
+        cv_fig = px.line(
+            agg.dropna(subset=["cv"]),
+            x="day",
+            y="cv",
+            markers=True,
+            labels={
+                "day": "Date",
+                "cv": "Cross-region CV",
+            },
+            title=f"Regional dispersion (coefficient of variation, n≥2 regions)",
+        )
+        cv_fig.update_layout(hovermode="x unified")
+        st.plotly_chart(cv_fig, use_container_width=True)
+
+        with st.expander("Daily prices by region"):
+            st.dataframe(rd, hide_index=True, use_container_width=True)
+
+
+# ----- Tab 5: Market analysis (slide deck) -----
+with tab_deck:
+    import streamlit.components.v1 as components  # noqa: E402
+
+    st.subheader("The GPU rental market, priced by the hour")
+    st.caption(
+        "A 15-slide read on cross-cloud GPU pricing, spot economics, and US "
+        "supply geography, built from the full dataset. Use arrow keys or click "
+        "the left/right half of a slide to navigate; press **f** for fullscreen."
+    )
+    deck_html = _load_deck()
+    if deck_html:
+        components.html(deck_html, height=680, scrolling=False)
+        st.download_button(
+            "Download deck (self-contained HTML)",
+            data=deck_html,
+            file_name="gpu_market_deck.html",
+            mime="text/html",
+        )
+    else:
+        st.info(
+            "The slide deck is not bundled with this deployment. "
+            f"Build it from the repo (`python3 deck/analyze.py && "
+            f"python3 deck/geo_analysis.py && python3 deck/build_deck.py`) "
+            f"or view the source on [GitHub]({GITHUB_URL}/tree/main/deck)."
+        )
+
+
+# ----- Tab 6: About / Methodology -----
 with tab_about:
     st.subheader("Get the data")
     col_a, col_b = st.columns(2)

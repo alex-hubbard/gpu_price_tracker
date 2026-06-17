@@ -1,0 +1,62 @@
+{
+  "top_hubs": [
+    {
+      "metro": "Virginia",
+      "listings": 51809
+    },
+    {
+      "metro": "Iowa",
+      "listings": 39158
+    },
+    {
+      "metro": "Oregon",
+      "listings": 31869
+    },
+    {
+      "metro": "Southcarolina",
+      "listings": 21790
+    },
+    {
+      "metro": "Lasvegas",
+      "listings": 16601
+    },
+    {
+      "metro": "Texas",
+      "listings": 10312
+    },
+    {
+      "metro": "Ohio",
+      "listings": 9831
+    },
+    {
+      "metro": "Losangeles",
+      "listings": 9629
+    },
+    {
+      "metro": "Arizona",
+      "listings": 8896
+    }
+  ],
+  "footprints": {
+    "B200": {
+      "listings": 5173,
+      "sites": 17
+    },
+    "H100": {
+      "listings": 17158,
+      "sites": 13
+    },
+    "A100": {
+      "listings": 25285,
+      "sites": 20
+    },
+    "T4": {
+      "listings": 62466,
+      "sites": 18
+    }
+  },
+  "concentration": {
+    "top3_share_pct": 47.2,
+    "n_metros": 26
+  }
+}

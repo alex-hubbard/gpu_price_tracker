@@ -1,0 +1,148 @@
+{
+  "headline": {
+    "gpu_listings": 802189,
+    "days": 79,
+    "providers": 13,
+    "gpu_types": 72,
+    "start": "2026-01-12",
+    "end": "2026-06-15",
+    "total_rows": 2813261
+  },
+  "price_timeseries": {
+    "B200": {
+      "first": 5.19,
+      "last": 6.99
+    },
+    "H200": {
+      "first": 2.99,
+      "last": 10.0
+    },
+    "H100": {
+      "first": 4.34,
+      "last": 5.53
+    },
+    "A100": {
+      "first": 3.05,
+      "last": 3.22
+    },
+    "L40S": {
+      "first": 3.5,
+      "last": 3.5
+    },
+    "A10": {
+      "first": 2.0,
+      "last": 2.0
+    },
+    "T4": {
+      "first": 0.9,
+      "last": 0.9
+    }
+  },
+  "ladder": {
+    "B200": 6.69,
+    "H100": 5.43,
+    "H200": 4.5,
+    "L40S": 3.5,
+    "A100": 3.22,
+    "V100": 2.95,
+    "A10": 2.0,
+    "P100": 1.63,
+    "L4": 1.23,
+    "T4": 0.9,
+    "A6000": 0.8,
+    "RTX5090": 0.65,
+    "RTX4090": 0.39
+  },
+  "spot_savings": {
+    "L40S": {
+      "ond": 3.5,
+      "spot": 0.95,
+      "disc_pct": 72.9
+    },
+    "T4": {
+      "ond": 0.9,
+      "spot": 0.25,
+      "disc_pct": 71.9
+    },
+    "A10": {
+      "ond": 2.0,
+      "spot": 0.59,
+      "disc_pct": 70.4
+    },
+    "L4": {
+      "ond": 1.23,
+      "spot": 0.45,
+      "disc_pct": 63.2
+    },
+    "V100": {
+      "ond": 2.95,
+      "spot": 1.18,
+      "disc_pct": 59.9
+    },
+    "A100": {
+      "ond": 3.22,
+      "spot": 1.41,
+      "disc_pct": 56.1
+    },
+    "H200": {
+      "ond": 4.5,
+      "spot": 2.29,
+      "disc_pct": 49.1
+    },
+    "H100": {
+      "ond": 5.43,
+      "spot": 2.97,
+      "disc_pct": 45.2
+    },
+    "RTX4090": {
+      "ond": 0.39,
+      "spot": 0.27,
+      "disc_pct": 31.6
+    }
+  },
+  "h100_by_provider": {
+    "vastai": 1.61,
+    "verda": 2.29,
+    "cudo": 2.65,
+    "nebius": 2.95,
+    "runpod": 2.99,
+    "datacrunch": 3.25,
+    "lambdalabs": 3.29,
+    "aws": 8.26,
+    "oci": 10.0,
+    "gcp": 10.98
+  },
+  "h100_spread": {
+    "cheapest": "vastai",
+    "cheapest_price": 1.61,
+    "dearest": "gcp",
+    "dearest_price": 10.98,
+    "ratio": 6.8
+  },
+  "h100_by_region": {
+    "South America": 11.56,
+    "Europe South": 10.0,
+    "Africa": 10.0,
+    "APAC Southeast": 10.0,
+    "GovCloud": 8.26,
+    "Europe West": 6.14,
+    "North America West": 5.75,
+    "APAC East": 5.72,
+    "Europe Central": 5.6,
+    "APAC South": 5.43,
+    "North America East": 5.38,
+    "Middle East": 3.99,
+    "North America Central": 3.99,
+    "Europe North": 2.29
+  },
+  "provider_share": {
+    "gcp": 391778,
+    "aws": 118953,
+    "azure": 111689,
+    "oci": 72628,
+    "lambdalabs": 36362,
+    "runpod": 17521,
+    "verda": 13158,
+    "vastai": 12285
+  }
+}
