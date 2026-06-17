@@ -172,7 +172,7 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
         
         provider_lower = provider.lower()
         normalized_provider = provider_map.get(provider_lower, provider_lower)
-        
+
         return GPUInstance(
             provider=normalized_provider,
             instance_type=instance_name,
@@ -190,6 +190,51 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
     except Exception as e:
         print(f"WARNING: Failed to convert gpuhunt item: {e}", file=sys.stderr)
         return None
+
+
+# Fallback provider lists, used only if gpuhunt's internal constants move.
+_FALLBACK_ONLINE = ['cudo', 'tensordock', 'vastai', 'vultr']
+_FALLBACK_OFFLINE = ['aws', 'azure', 'datacrunch', 'gcp', 'lambdalabs',
+                     'nebius', 'oci', 'runpod', 'cloudrift']
+
+
+def _provider_split():
+    """Return (loaded_online_providers, offline_providers).
+
+    Online providers hit live vendor APIs and can fail individually (e.g. a 403);
+    offline providers are served from gpuhunt's downloaded catalog and don't make
+    per-provider network calls. We only return online providers that gpuhunt has
+    actually loaded, since querying an unloaded one raises.
+    """
+    try:
+        from gpuhunt._internal.catalog import ONLINE_PROVIDERS, OFFLINE_PROVIDERS
+        from gpuhunt._internal.default import default_catalog
+        loaded = {p.NAME for p in default_catalog().providers}
+        online = [n for n in ONLINE_PROVIDERS if n in loaded]
+        return online, list(OFFLINE_PROVIDERS)
+    except Exception:
+        return list(_FALLBACK_ONLINE), list(_FALLBACK_OFFLINE)
+
+
+def _query_isolated(names, query_params, bulk=False, verbose=False):
+    """Query the given providers, isolating failures.
+
+    A single provider raising (API error, format change, rate limit) is caught and
+    that provider is skipped, instead of aborting the whole collection. Returns
+    (items, failed_provider_names).
+    """
+    items, failed = [], []
+    groups = [names] if bulk else [[n] for n in names]
+    for group in groups:
+        label = group[0] if len(group) == 1 else 'catalog'
+        try:
+            items.extend(gpuhunt.query(provider=group, **query_params))
+        except Exception as e:
+            failed.append(label)
+            if verbose:
+                print(f"  WARNING: provider '{label}' failed and was skipped: "
+                      f"{type(e).__name__}: {e}", file=sys.stderr)
+    return items, failed
 
 
 def collect_gpuhunt_prices(
@@ -218,8 +263,7 @@ def collect_gpuhunt_prices(
         print("Fetching GPU prices from gpuhunt...")
     
     try:
-        # Query gpuhunt catalog
-        # Build query parameters
+        # Build query parameters (provider is handled separately, below)
         query_params = {}
         if min_gpu_memory:
             query_params['min_gpu_memory'] = min_gpu_memory
@@ -229,21 +273,29 @@ def collect_gpuhunt_prices(
             query_params['max_price'] = max_price
         if gpu_name:
             query_params['gpu_name'] = gpu_name
-        if provider:
-            query_params['provider'] = provider
-        
-        # Suppress warnings
+
+        # Fetch resiliently: a single provider failing (e.g. Vast.ai returning a
+        # 403) must not zero out every other provider. We query the offline
+        # catalog in one bulk call and each live-API provider individually so
+        # failures are contained.
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            # Get catalog items
-            if query_params:
-                items = gpuhunt.query(**query_params)
+            if provider:
+                items, failed = _query_isolated([provider], query_params, verbose=verbose)
             else:
-                # Get all available instances
-                items = gpuhunt.query()
-        
+                online, offline = _provider_split()
+                off_items, off_failed = _query_isolated(offline, query_params, bulk=True, verbose=verbose)
+                on_items, on_failed = _query_isolated(online, query_params, bulk=False, verbose=verbose)
+                items = off_items + on_items
+                failed = off_failed + on_failed
+
+        if failed:
+            print(f"WARNING: {len(failed)} provider(s) unavailable, skipped: "
+                  f"{', '.join(failed)}", file=sys.stderr)
+
         if verbose:
-            print(f"  Retrieved {len(items) if hasattr(items, '__len__') else 'unknown'} items from gpuhunt")
+            print(f"  Retrieved {len(items)} items from gpuhunt "
+                  f"({len(failed)} provider(s) skipped)")
         
         # Convert to GPUInstance objects
         instances = []
