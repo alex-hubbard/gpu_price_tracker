@@ -66,6 +66,20 @@ listing observed in that snapshot. Columns:
 | `is_spot` | bool | Spot / preemptible flag (semantics differ by provider; see §7) |
 | `available` | bool (nullable) | Whether the listing was offered at scrape time |
 | `availability_zone` | string (nullable) | Sub-region zone where applicable |
+| `quality` | string | Row-quality tag: `ok`, `cpu_only`, `unknown_gpu`, or `missing_memory` (see §8). Filter to `quality = 'ok'` for most analyses |
+| `region_canonical` | string (nullable) | Canonicalized region name, joined from `data/regions.csv` (see §6) |
+| `country` | string (nullable) | ISO country of the region |
+| `region_lat`, `region_lon` | double (nullable) | Approximate region coordinates |
+| `region_group` | string (nullable) | Coarse geographic bucket (e.g. `North America East`) for cross-cloud grouping |
+
+The last six columns were introduced in **schema v1.1** (July 2026). All
+previously published snapshot files were upgraded in place to v1.1
+(`scripts/upgrade_parquet_schema.py`), so the published tree is
+schema-uniform; upgraded files carry `backfilled = true` in their Parquet
+file metadata. Every v1.1 file also embeds provenance in its file-level
+metadata: `schema_version`, `row_count`, `quality_summary`,
+`snapshot_timestamp_utc`, `emitted_at_utc`, and (for freshly collected
+snapshots) `git_sha` and `gpuhunt_version`.
 
 Derived columns (computed at query time, not stored):
 
@@ -139,14 +153,18 @@ What we normalize:
   publish in USD; no FX conversion is applied. Adding a non-USD provider
   in the future will require a `currency` column.
 
+- **Regions** (since schema v1.1): the raw provider region string is
+  preserved verbatim in `region` (`us-east-1` on AWS, `us-east1` on GCP,
+  `eastus` on Azure, `US-ASHBURN-1` on OCI, etc.), and a hand-maintained
+  lookup table (`data/regions.csv`) supplies `region_canonical`,
+  `country`, `region_lat`/`region_lon`, and `region_group` alongside it.
+  The enrichment columns are nullable — a raw region not yet present in
+  the lookup table yields NULLs, so cross-cloud regional analyses should
+  either handle NULLs or fall back to the raw string
+  (`COALESCE(region_canonical, region)`).
+
 What we do **not** normalize:
 
-- **`region`**: raw provider region strings are stored verbatim (`us-east-1`
-  on AWS, `us-east1` on GCP, `eastus` on Azure, `US-ASHBURN-1` on OCI,
-  `EUR-IS-2` on Vultr, etc.). Cross-provider regional comparisons
-  therefore require a separate lookup table — building this is on the
-  roadmap. Until then, regional analyses should restrict to a single
-  provider, or filter the raw strings explicitly.
 - **`is_spot` semantics**: see §7.
 
 ## 7. Spot semantics by provider
@@ -170,12 +188,16 @@ treat marketplace providers separately.
 
 ## 8. Quality flags and known issues
 
-- **CPU-only / unknown rows**: a non-trivial fraction of upstream
-  responses are CPU-only instances or instances whose GPU `gpuhunt`
-  cannot map. These appear as `gpu_count = 0` and/or
-  `gpu_type = 'Unknown'`. The Streamlit dashboard filters them out by
-  default; the raw Parquet currently still contains them. Adding a
-  `quality` column at collection time is on the roadmap.
+- **The `quality` column** (schema v1.1) tags known-but-not-fatal issues
+  per row so consumers can opt in or out of noisy data:
+  - `cpu_only` — `gpu_count = 0` rows (CPU SKUs that slip through
+    gpuhunt's accelerator filter). Since July 2026 these are dropped at
+    collection time and only appear in historical, backfilled snapshots.
+  - `unknown_gpu` — the accelerator could not be mapped to a normalized
+    family (`gpu_type = 'Unknown'`).
+  - `missing_memory` — no per-GPU VRAM figure was reported.
+  - `ok` — none of the above. **Filter to `quality = 'ok'` for most
+    analyses** (this is what the dashboard does).
 - **`available = false`**: a listing being scraped does not guarantee
   it can be launched. Some providers expose all SKUs and we infer
   availability where possible, but the field is best-effort.

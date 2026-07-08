@@ -60,11 +60,15 @@ def get_con() -> duckdb.DuckDBPyConnection:
             con.execute("SET s3_url_style='vhost'")
         glob = f"s3://{bucket}/{prefix}/**/*.parquet"
 
+    # union_by_name: snapshot files written before schema v1.1 lack the
+    # `quality` and region-enrichment columns. Unioning by name keeps the
+    # view working over a mixed-vintage tree (missing columns read as NULL,
+    # which the `prices` view below backfills).
     con.execute(
         f"""
         CREATE OR REPLACE VIEW prices_raw AS
         SELECT *
-        FROM read_parquet('{glob}', hive_partitioning = true)
+        FROM read_parquet('{glob}', hive_partitioning = true, union_by_name = true)
         """
     )
 
@@ -88,42 +92,45 @@ def get_con() -> duckdb.DuckDBPyConnection:
     # Build the canonical `prices` view. We always expose `quality`,
     # `region_canonical`, `country`, `region_lat`, `region_lon`, and
     # `region_group` so downstream queries don't have to think about which
-    # snapshot vintage the data came from.
+    # snapshot vintage the data came from. Rows from pre-v1.1 files carry
+    # NULLs in those columns (union_by_name), so each one is coalesced:
+    # quality is synthesized from the row itself, region fields fall back
+    # to the regions.csv lookup join.
     sample_columns = {
         c[0]
         for c in con.execute("DESCRIBE prices_raw").fetchall()
     }
-    select_parts = ["p.*"]
-    if "region_canonical" not in sample_columns:
-        select_parts += [
-            "r.region_canonical AS region_canonical",
-            "r.country AS country",
-            "r.region_lat AS region_lat",
-            "r.region_lon AS region_lon",
-            "r.region_group AS region_group",
-        ]
-        join_clause = (
-            "LEFT JOIN regions r "
-            "ON p.provider = r.provider AND p.region = r.region"
-        )
-    else:
-        join_clause = ""
+    base_columns = [
+        "timestamp", "provider", "instance_type", "gpu_type", "gpu_count",
+        "gpu_memory_gb", "vcpus", "ram_gb", "region", "price_per_hour",
+        "is_spot", "available", "availability_zone", "dt",
+    ]
+    select_parts = [f"p.{c}" for c in base_columns if c in sample_columns]
 
-    if "quality" not in sample_columns:
-        # Synthesize a quality column for older snapshots so the same
-        # `quality = 'ok'` filter works everywhere.
-        select_parts.append(
-            "CASE WHEN gpu_count <= 0 THEN 'cpu_only' "
-            "     WHEN gpu_type = 'Unknown' THEN 'unknown_gpu' "
-            "     ELSE 'ok' END AS quality"
-        )
+    quality_case = (
+        "CASE WHEN p.gpu_count <= 0 THEN 'cpu_only' "
+        "     WHEN p.gpu_type = 'Unknown' THEN 'unknown_gpu' "
+        "     WHEN p.gpu_memory_gb IS NULL THEN 'missing_memory' "
+        "     ELSE 'ok' END"
+    )
+    if "quality" in sample_columns:
+        select_parts.append(f"COALESCE(p.quality, {quality_case}) AS quality")
+    else:
+        select_parts.append(f"{quality_case} AS quality")
+
+    for col in ("region_canonical", "country", "region_lat", "region_lon", "region_group"):
+        if col in sample_columns:
+            select_parts.append(f"COALESCE(p.{col}, r.{col}) AS {col}")
+        else:
+            select_parts.append(f"r.{col} AS {col}")
 
     con.execute(
         f"""
         CREATE OR REPLACE VIEW prices AS
         SELECT {', '.join(select_parts)}
         FROM prices_raw p
-        {join_clause}
+        LEFT JOIN regions r
+          ON p.provider = r.provider AND p.region = r.region
         """
     )
     return con

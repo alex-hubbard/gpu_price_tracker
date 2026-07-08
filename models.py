@@ -22,6 +22,7 @@ class GPUInstance:
     available: Optional[bool] = None  # Whether available in region
     availability_zone: Optional[str] = None  # Specific AZ if applicable
     last_updated: Optional[datetime] = None
+    quality: str = "ok"  # 'ok' | 'unknown_gpu' | 'missing_memory' | ...
     
     def __post_init__(self):
         if self.last_updated is None:
@@ -50,6 +51,7 @@ class GPUInstance:
             'is_spot': self.is_spot,
             'available': self.available,
             'availability_zone': self.availability_zone,
+            'quality': self.quality,
             'last_updated': self.last_updated.isoformat() if self.last_updated else None
         }
     

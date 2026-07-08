@@ -173,11 +173,28 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
         provider_lower = provider.lower()
         normalized_provider = provider_map.get(provider_lower, provider_lower)
 
+        # Drop CPU-only / unscoped listings at the source: gpuhunt occasionally
+        # returns instances with gpu_count == 0 (CPU SKUs that slip through the
+        # accelerator filter). They have no pricing meaning for this dataset
+        # and pollute every cross-provider comparison if kept.
+        gpu_count_int = int(gpu_count) if gpu_count else 0
+        if gpu_count_int <= 0:
+            return None
+
+        # Quality flags surface known-but-not-fatal issues without dropping the
+        # row, so power users can opt in to noisy data.
+        if not gpu_name or gpu_name == "Unknown":
+            quality = "unknown_gpu"
+        elif not gpu_memory:
+            quality = "missing_memory"
+        else:
+            quality = "ok"
+
         return GPUInstance(
             provider=normalized_provider,
             instance_type=instance_name,
             gpu_type=gpu_name,
-            gpu_count=gpu_count,
+            gpu_count=gpu_count_int,
             gpu_memory_gb=int(gpu_memory) if gpu_memory else None,
             vcpus=int(cpu) if cpu else 0,
             ram_gb=float(memory) if memory else 0.0,
@@ -185,7 +202,8 @@ def convert_gpuhunt_to_instance(item) -> Optional[GPUInstance]:
             price_per_hour=float(price),
             is_spot=bool(is_spot),
             available=True,  # gpuhunt typically returns available instances
-            availability_zone=None
+            availability_zone=None,
+            quality=quality,
         )
     except Exception as e:
         print(f"WARNING: Failed to convert gpuhunt item: {e}", file=sys.stderr)

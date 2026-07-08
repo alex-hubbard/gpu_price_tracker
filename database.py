@@ -45,14 +45,24 @@ class PriceDatabase:
                 is_spot BOOLEAN NOT NULL DEFAULT 0,
                 available BOOLEAN,
                 availability_zone TEXT,
+                quality TEXT NOT NULL DEFAULT 'ok',
                 UNIQUE(timestamp, provider, instance_type, region, is_spot)
             )
         """)
-        
+
         # Add is_spot column to existing tables if it doesn't exist (migration)
         try:
             cursor.execute("ALTER TABLE gpu_prices ADD COLUMN is_spot BOOLEAN DEFAULT 0")
             cursor.execute("UPDATE gpu_prices SET is_spot = 0 WHERE is_spot IS NULL")
+        except sqlite3.OperationalError:
+            # Column already exists, skip
+            pass
+
+        # Add quality column to existing tables (migration). Existing rows
+        # are tagged 'ok' by default — a slight overcount, but acceptable
+        # since fresh collections will tag accurately going forward.
+        try:
+            cursor.execute("ALTER TABLE gpu_prices ADD COLUMN quality TEXT NOT NULL DEFAULT 'ok'")
         except sqlite3.OperationalError:
             # Column already exists, skip
             pass
@@ -120,8 +130,8 @@ class PriceDatabase:
                     INSERT OR REPLACE INTO gpu_prices (
                         timestamp, provider, instance_type, gpu_type, gpu_count,
                         gpu_memory_gb, vcpus, ram_gb, region, price_per_hour,
-                        is_spot, available, availability_zone
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        is_spot, available, availability_zone, quality
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """, (
                     timestamp,
                     inst.provider,
@@ -135,7 +145,8 @@ class PriceDatabase:
                     inst.price_per_hour,
                     inst.is_spot,
                     inst.available,
-                    inst.availability_zone
+                    inst.availability_zone,
+                    inst.quality,
                 ))
                 inserted += 1
             except sqlite3.IntegrityError:
@@ -359,7 +370,8 @@ class PriceDatabase:
         is_spot = row[11] if len(row) > 11 else False
         available_idx = 12 if len(row) > 12 else 11
         az_idx = 13 if len(row) > 13 else 12
-        
+        quality_idx = 14 if len(row) > 14 else None
+
         return GPUInstance(
             provider=row[2],
             instance_type=row[3],
@@ -373,7 +385,8 @@ class PriceDatabase:
             is_spot=bool(is_spot),
             available=row[available_idx] if available_idx < len(row) else None,
             availability_zone=row[az_idx] if az_idx < len(row) else None,
-            last_updated=datetime.fromisoformat(row[1])
+            quality=row[quality_idx] if quality_idx is not None and quality_idx < len(row) else "ok",
+            last_updated=datetime.fromisoformat(row[1]),
         )
     
     def get_stats(self) -> Dict[str, Any]:
