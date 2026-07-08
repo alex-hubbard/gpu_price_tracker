@@ -41,19 +41,18 @@ ENV/
 # OS
 .DS_Store
 Thumbs.db
-CHANGELOG.md
-# Data and reports — ignore generated artifacts but check in the small,
-# hand-edited reference tables that the runtime depends on.
+
+# Data and reports — generated artifacts stay out of git. The published
+# dataset lives on S3 / Hugging Face (Parquet); the SQLite db, logs, and
+# timestamped reports are local working state. Only the hand-edited
+# regions.csv reference table is tracked.
 data/*
-!data/gpu_prices.db
 !data/regions.csv
-!data/*.log
-reports/*
-!reports/*.txt
-!reports/figures/
-reports/figures/*
-!reports/figures/*.png
+reports/
+
+# Local analysis notebooks (large outputs; the published deck lives in deck/)
 analysis.ipynb
+aws_gcp_analysis.ipynb
 
 # Streamlit
 streamlit_app/.streamlit/secrets.toml
