@@ -2,8 +2,10 @@ name: Daily GPU Price Collection
 
 on:
   schedule:
-    # Run daily at 9:00 AM UTC (adjust timezone as needed)
+    # Twice daily at 09:00 and 21:00 UTC — the cadence the dataset card
+    # promises. Runs entirely in CI; no local machine involved.
     - cron: '0 9 * * *'
+    - cron: '0 21 * * *'
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
