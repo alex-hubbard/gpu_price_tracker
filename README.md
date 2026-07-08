@@ -1,147 +1,122 @@
 # GPU Price Tracker
 
-Track GPU instance prices and availability across 13+ cloud providers using the gpuhunt module. Store data in a time series database and generate reports and visualizations.
+[![Daily collection](https://github.com/alex-hubbard/gpu_price_tracker/actions/workflows/daily_update.yml/badge.svg)](https://github.com/alex-hubbard/gpu_price_tracker/actions/workflows/daily_update.yml)
+[![Dataset on Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-afhubbard%2Fgpu--prices-yellow)](https://huggingface.co/datasets/afhubbard/gpu-prices)
+[![Live dashboard](https://img.shields.io/badge/Streamlit-live%20dashboard-FF4B4B?logo=streamlit&logoColor=white)](https://gpu-price-trends.streamlit.app/)
+[![Code: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
+[![Data: CC BY 4.0](https://img.shields.io/badge/data-CC%20BY%204.0-lightgrey.svg)](DATA_LICENSE)
 
-## Features
+An open, continuously updated dataset of **GPU rental prices across 13
+cloud providers** — AWS, GCP, Azure, OCI, Lambda Labs, RunPod, Vast.ai,
+DataCrunch, Cudo Compute, TensorDock, Vultr, Nebius, and CloudRift.
+Snapshots are collected twice daily (09:00 / 21:00 UTC) since January
+2026: **1.7M+ GPU listing observations covering 73 GPU types**, from
+H100/H200 clusters to consumer RTX cards, published as Hive-partitioned
+Parquet.
 
-- Track 50,000+ GPU instances from 13+ providers
-- Store historical pricing data in SQLite database
-- Generate comprehensive reports and visualizations
-- Automated twice-daily price collection
-- Query historical trends
+**Explore it live: <https://gpu-price-trends.streamlit.app/>**
 
-## Quick Start
+![H100 price time series across providers](deck/figures/01_price_timeseries.png)
 
-### Install
+## Get the data
+
+The easiest way is the [Hugging Face dataset](https://huggingface.co/datasets/afhubbard/gpu-prices):
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("afhubbard/gpu-prices", split="train")
+```
+
+Or query it in place with DuckDB — no download of the full dataset needed:
+
+```python
+import duckdb
+
+con = duckdb.connect()
+con.sql("INSTALL httpfs; LOAD httpfs;")
+con.sql("""
+    SELECT gpu_type,
+           ROUND(AVG(price_per_hour / gpu_count), 3) AS usd_per_gpu_hour,
+           COUNT(*) AS listings
+    FROM read_parquet('hf://datasets/afhubbard/gpu-prices/prices/**/*.parquet',
+                      hive_partitioning = true)
+    WHERE dt = (SELECT MAX(dt) FROM read_parquet(
+                    'hf://datasets/afhubbard/gpu-prices/prices/**/*.parquet',
+                    hive_partitioning = true))
+      AND quality = 'ok'
+    GROUP BY gpu_type
+    ORDER BY usd_per_gpu_hour
+""").show()
+```
+
+The same files are mirrored on S3 for anonymous access:
+`s3://hubbard-gpu-price-data/prices/` (Hive-partitioned by `dt=YYYY-MM-DD`,
+one immutable file per snapshot).
+
+Each row is one listing — a `(provider, instance_type, region, is_spot)`
+offer observed at a snapshot timestamp — with normalized GPU family,
+GPU count, VRAM, vCPUs, RAM, USD price per hour, a row-`quality` tag,
+and canonicalized region fields for cross-cloud comparison. Compute
+`price_per_hour / gpu_count` for fair cross-SKU comparison, and filter
+to `quality = 'ok'` for most analyses. Full schema and caveats:
+[methodology.md](methodology.md).
+
+## What's in the box
+
+```
+gpuhunt scrapers (13 providers)
+        │  collect.py — twice daily via GitHub Actions
+        ▼
+SQLite (local working store)
+        │  scripts/emit_latest_parquet.py — one immutable file per snapshot
+        ▼
+Parquet: prices/dt=YYYY-MM-DD/snapshot_*.parquet
+        ├──► S3 (anonymous read)        ──► Streamlit dashboard (DuckDB httpfs)
+        └──► Hugging Face Datasets mirror
+```
+
+| | |
+| --- | --- |
+| [Live dashboard](https://gpu-price-trends.streamlit.app/) | Latest prices, trends, spot spreads, regional dispersion, market deck |
+| [methodology.md](methodology.md) | Canonical reference: collection, schema, normalization, spot semantics, limitations |
+| [MODELING_GPU_USAGE_TRENDS.md](MODELING_GPU_USAGE_TRENDS.md) | What analytical questions the data can and cannot answer, with starter SQL |
+| [dataset_card.md](dataset_card.md) | The Hugging Face dataset card |
+| [deck/](deck/README.md) | A 15-slide market analysis built from the dataset (reproducible) |
+| [streamlit_app/](streamlit_app/README.md) | Dashboard architecture, S3/HF publishing, deployment |
+| [GUIDE.md](GUIDE.md) | Running the collection pipeline yourself |
+
+## Run the collector yourself
 
 ```bash
 pip install -r requirements.txt
+
+./gpu collect            # one collection pass -> SQLite
+./gpu report             # summary report
+./gpu best-deals H100    # best current $/GPU-hr for a GPU family
+./gpu plot               # price/availability charts
+./gpu daily-update       # collect + reports + plots
+./gpu setup              # install the twice-daily local scheduler
 ```
 
-### Collect GPU Prices
+Collection is resilient to single-provider failures, and rows are
+tagged at the source (`ok` / `unknown_gpu` / `missing_memory`; CPU-only
+SKUs are dropped). To publish your own Parquet tree from the SQLite
+store:
 
 ```bash
-./gpu collect
+python3 scripts/sqlite_to_parquet.py --db data/gpu_prices.db --out data/parquet
 ```
 
-### Generate Reports
+The GitHub Actions workflow
+([daily_update.yml](.github/workflows/daily_update.yml)) runs the same
+pipeline in CI and syncs new snapshots to S3 and Hugging Face.
 
-```bash
-# Display summary report
-./gpu report
+## License & citation
 
-# Show best deals for specific GPU
-./gpu best-deals H100
-
-# Save all reports to files
-./gpu save-reports
-```
-
-### Generate Visualizations
-
-```bash
-# Generate plots
-./gpu plot
-
-# View plots
-ls -lh reports/figures/
-```
-
-### Set Up Automation
-
-```bash
-# Configure twice-daily collection (9 AM & 9 PM)
-./gpu setup
-```
-
-## Commands
-
-```bash
-./gpu collect           # Collect GPU prices
-./gpu report           # Display summary report
-./gpu best-deals       # Show best deals
-./gpu save-reports     # Save all reports to files
-./gpu plot             # Generate visualization plots
-./gpu daily-update     # Run complete update (collect + reports + plots)
-./gpu setup            # Set up automated scheduler
-```
-
-## Supported Providers
-
-- AWS, GCP, Azure
-- Lambda Labs, RunPod, Vast.ai
-- DataCrunch, Cudo Compute, TensorDock
-- Vultr, OCI, Nebius, CloudRift
-
-## Supported GPUs
-
-65+ GPU types including:
-- H100, H200, A100, A30, L40S, L4
-- RTX 5090, RTX 4090, RTX 3090
-- V100, P100, T4
-- And many more
-
-## Output Files
-
-### Reports (text)
-- `reports/report_TIMESTAMP.txt` - Comprehensive report
-- `reports/best_deals_TIMESTAMP.txt` - Best deals
-- `reports/best_H100_TIMESTAMP.txt` - GPU-specific reports
-
-### Plots (PNG)
-- `reports/figures/gpu_avg_prices.png` - Average price per GPU
-- `reports/figures/gpu_instance_counts.png` - Instance availability
-- `reports/figures/gpu_price_vs_availability.png` - Combined view
-
-## Database
-
-Data stored in `data/gpu_prices.db` (SQLite):
-- Historical price snapshots
-- Query trends over time
-- Compare prices across providers
-
-```bash
-# View database stats
-python3 query_history.py --stats
-
-# Query historical trends
-python3 query_history.py --trends --gpu-type H100 --days 7
-```
-
-## Documentation
-
-- [README.md](README.md) - This file
-- [methodology.md](methodology.md) - Collection methodology, schema, normalization, limitations
-- [GUIDE.md](GUIDE.md) - Detailed CLI usage guide
-- [MODELING_GPU_USAGE_TRENDS.md](MODELING_GPU_USAGE_TRENDS.md) - Analytical context and starter queries
-- [VISUALIZATION_GUIDE.md](VISUALIZATION_GUIDE.md) - Visualization guide
-- [streamlit_app/README.md](streamlit_app/README.md) - Public dashboard deploy guide
-
-## Requirements
-
-- Python 3.7+
-- gpuhunt
-- matplotlib
-- tabulate
-- colorama
-
-## License
-
-This repository is dual-licensed.
-
-- **Code** is released under the MIT License — see [LICENSE](LICENSE).
-- **Data** (the dataset published to the public S3 mirror and the
-  Hugging Face Datasets repository) is released under the Creative
-  Commons Attribution 4.0 International License (CC BY 4.0) — see
-  [DATA_LICENSE](DATA_LICENSE).
-
-## How to cite
-
-If you use this dataset or software in your research, please cite it.
-Citation metadata is provided in [CITATION.cff](CITATION.cff); GitHub
-renders a "Cite this repository" widget from that file.
-
-BibTeX:
+Code is [MIT](LICENSE); the dataset is
+[CC BY 4.0](DATA_LICENSE). If you use the dataset in research, please
+cite it ([CITATION.cff](CITATION.cff)):
 
 ```bibtex
 @misc{hubbard2026gpuprices,

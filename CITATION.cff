@@ -10,13 +10,14 @@ authors:
     email: alex.hubbard@berkeley.edu
     affiliation: University of California, Berkeley
 repository-code: "https://github.com/alex-hubbard/gpu_price_tracker"
-url: "https://github.com/alex-hubbard/gpu_price_tracker"
+url: "https://gpu-price-trends.streamlit.app/"
 abstract: >-
-  A continuously-updated dataset of GPU instance pricing across 12+
+  A continuously-updated dataset of GPU instance pricing across 13
   public cloud providers (AWS, GCP, Azure, Lambda Labs, RunPod,
   Vast.ai, DataCrunch, Cudo Compute, TensorDock, Vultr, OCI, Nebius,
   CloudRift). Snapshots are collected twice daily via the `gpuhunt`
-  library and published as Hive-partitioned Parquet files.
+  library and published as Hive-partitioned Parquet files. The
+  dataset is licensed CC-BY-4.0; the collection code is MIT.
 keywords:
   - gpu
   - cloud computing
@@ -26,7 +27,8 @@ keywords:
   - a100
   - spot instances
   - market microstructure
-license: MIT
-license-url: "https://opensource.org/license/mit"
-version: "0.1.0"
-date-released: "2026-05-07"
+license:
+  - CC-BY-4.0
+  - MIT
+version: "1.1.0"
+date-released: "2026-07-08"

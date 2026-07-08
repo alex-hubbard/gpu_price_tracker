@@ -1,5 +1,7 @@
 # GPU Price Tracker — Streamlit Dashboard
 
+**Deployed at <https://gpu-price-trends.streamlit.app/>.**
+
 Public-facing visualization for the cross-cloud GPU pricing data this repo
 collects. Reads partitioned Parquet files from S3 via DuckDB's `httpfs`
 extension — the app **never downloads the full dataset**; each query pulls
